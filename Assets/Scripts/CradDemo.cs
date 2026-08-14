@@ -5,13 +5,13 @@ using PokerGame.Core;
 public class CradDemo : MonoBehaviour
 {
     //宣告類型 名稱 = 新建 實體();
-    public PlayingCard testCard = new PlayingCard(Suit.Spades, Rank.Ace);
+    public PlayingCard testCard = new PlayingCard(Suit.Spades, Rank.King);
 
     //按下PLAY後執行一次，初始化
     void Start()
     {
         //利用除錯訊息視窗印出指定內容
-        Debug.Log(testCard.Suit.ToString() + testCard.Rank);
+        Debug.Log(testCard.Info());
     }
 
     //遊戲每一FPS執行一次，偵測操作/刷新內容

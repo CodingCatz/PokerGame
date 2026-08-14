@@ -24,9 +24,20 @@
         /// <param name="rank">點數</param>
         public PlayingCard(Suit suit, Rank rank)
         {
-            Suit = suit;
+            Suit = suit;//紀錄在上方的欄位中
             Rank = rank;
         }
         #endregion 建構式
+
+        #region 公開方法
+        /// <summary>
+        /// 撲克牌資料的文字版
+        /// </summary>
+        /// <returns>花色+數值的文字</returns>
+        public string Info()
+        {
+            return Suit.ToString() + (int)Rank;
+        }
+        #endregion 公開方法
     }
 }
