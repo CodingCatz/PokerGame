@@ -14,13 +14,13 @@ public class CradDemo : MonoBehaviour
     {
         //利用除錯訊息視窗印出指定內容
         Debug.Log(testCard.Info());
-        //視覺顯示.綁定(卡牌資料)
-        cardView.Bind(testCard);
+        
     }
 
     //遊戲每一FPS執行一次，偵測操作/刷新內容
     void Update()
     {
-        
+        //視覺顯示.綁定(卡牌資料)
+        cardView.Bind(testCard);
     }
 }

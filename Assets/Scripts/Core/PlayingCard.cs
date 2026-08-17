@@ -1,19 +1,22 @@
-﻿namespace PokerGame.Core
+﻿using System;
+
+namespace PokerGame.Core
 {
     /// <summary>
     /// [類別]一張撲克牌的資料結構
     /// </summary>
+    [Serializable]//請系統預先序列化
     public class PlayingCard
     {
         #region 公開屬性
         /// <summary>
         /// [唯讀]取得花色
         /// </summary>
-        public Suit Suit { get; }
+        public Suit Suit; //{ get; }
         /// <summary>
         /// [唯讀]取得點數
         /// </summary>
-        public Rank Rank { get; }
+        public Rank Rank; //{ get; }
         #endregion 公開屬性
 
         #region 建構式
