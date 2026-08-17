@@ -12,11 +12,11 @@ namespace PokerGame.Core
         /// <summary>
         /// [唯讀]取得花色
         /// </summary>
-        public Suit Suit; //{ get; }
+        public Suit Suit { get; }
         /// <summary>
         /// [唯讀]取得點數
         /// </summary>
-        public Rank Rank; //{ get; }
+        public Rank Rank { get; }
         #endregion 公開屬性
 
         #region 建構式

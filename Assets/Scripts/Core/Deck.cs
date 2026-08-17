@@ -13,9 +13,14 @@ namespace PokerGame.Core
         /// 保管卡牌資料的清單
         /// </summary>
         private readonly List<PlayingCard> _cards = new List<PlayingCard>();
+        /// <summary>
+        /// 下一張抽出的序號
+        /// </summary>
+        private int _nextIndex;
         #endregion 私有欄位
 
         #region 公開屬性
+
         #endregion 公開屬性
 
         #region 建構式
@@ -23,9 +28,36 @@ namespace PokerGame.Core
         {
             CreateStandardCards();
         }
+
         #endregion 建構式
 
         #region 公開方法
+        /// <summary>
+        /// 重設
+        /// </summary>
+        public void Reset()
+        {
+            _nextIndex = 0;
+        }
+
+        /// <summary>
+        /// 洗牌
+        /// </summary>
+        public void Shuffle()
+        {
+
+        }
+
+        /// <summary>
+        /// 抽牌
+        /// </summary>
+        /// <returns>一張牌</returns>
+        public PlayingCard Draw()
+        {
+            //_nextIndex++; 先跳號
+            return _cards[_nextIndex++];//先使用後增加
+            _nextIndex++;//跳一號不會執行
+        }
         #endregion 公開方法
 
         #region 私有方法
