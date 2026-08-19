@@ -47,7 +47,7 @@ namespace PokerGame.Core
 
         #region 公開方法
         /// <summary>
-        /// 重設
+        /// 重設牌庫使用狀態
         /// </summary>
         public void Reset()
         {
@@ -55,7 +55,7 @@ namespace PokerGame.Core
         }
 
         /// <summary>
-        /// 洗牌演算法
+        /// 執行洗牌(演算法)
         /// </summary>
         public void Shuffle()
         {
