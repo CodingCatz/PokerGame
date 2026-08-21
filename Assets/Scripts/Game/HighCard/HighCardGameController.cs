@@ -1,4 +1,5 @@
-﻿using PokerGame.Game;
+﻿using PokerGame.Core;
+using PokerGame.Game;
 using UnityEngine;
 
 namespace PokerGame.Game.HighCard
@@ -13,6 +14,13 @@ namespace PokerGame.Game.HighCard
         [SerializeField]
         private Transform _dealerHand;
         #endregion 欄位
+
+        #region 私有欄位
+        /// <summary>
+        /// 該遊戲專屬持有的遊戲規則書
+        /// </summary>
+        private readonly HighCardRules _rules = new HighCardRules();
+        #endregion 私有欄位
 
         #region 生命週期
         void Start()
@@ -30,8 +38,12 @@ namespace PokerGame.Game.HighCard
             //荷官開局
             _dealer.BeginRound();
             //發牌給參與者
-            _dealer.DealTo(_playerHand);
-            _dealer.DealTo(_dealerHand);
+            PlayingCard playCard = _dealer.DealTo(_playerHand);
+            PlayingCard dealerCard = _dealer.DealTo(_dealerHand);
+            //用規則書取得結果
+            string result = _rules.Resolve(playCard, dealerCard);
+
+            Debug.Log(result);
         }
         #endregion 公開方法
     }
