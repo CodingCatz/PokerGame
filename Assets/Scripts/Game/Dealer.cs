@@ -51,14 +51,34 @@ namespace PokerGame.Game
         /// <summary>
         /// 發牌給某人
         /// </summary>
+        /// <param name="dest">目的地</param>
         /// <returns>卡牌資料</returns>
-        public PlayingCard DealTo()
+        public PlayingCard DealTo(Transform dest)
         {
-            //抽出一張
+            //抽出一張(資料)
             PlayingCard card = _deck.Draw();
+            //抽出一張(空閒牌面)
+            CardView view = viewPool.Rent();
+            //丟到所屬手牌區(目的地)
+            view.transform.SetParent(dest, false);
+            //資料與視覺組合
+            view.Bind(card);
+            //紀錄已發出去的牌面實體(物件池回收參考清單)
+            _activeViews.Add(view);
 
             //傳出去
             return card;
+        }
+
+        /// <summary>
+        /// 將目前已發出去的牌面收回到物件池
+        /// </summary>
+        public void CollectAll()
+        {
+            foreach (CardView view in _activeViews) 
+            {
+                viewPool.Return(view);
+            }
         }
         #endregion 公開方法
 
