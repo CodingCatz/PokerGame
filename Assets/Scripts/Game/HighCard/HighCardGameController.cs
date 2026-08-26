@@ -1,4 +1,5 @@
-﻿using PokerGame.Core;
+﻿using PokerGame.Betting;
+using PokerGame.Core;
 using PokerGame.Game;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace PokerGame.Game.HighCard
         #region 欄位
         [SerializeField]
         private Dealer _dealer;
+        private TableSession _session;
         [SerializeField]
         private Transform _playerHand;
         [SerializeField]
@@ -25,6 +27,7 @@ namespace PokerGame.Game.HighCard
         #region 生命週期
         void Start()
         {
+            _session = TableSession.Instance;
             PlayRound();
         }
         #endregion 生命週期
@@ -41,9 +44,9 @@ namespace PokerGame.Game.HighCard
             PlayingCard playCard = _dealer.DealTo(_playerHand);
             PlayingCard dealerCard = _dealer.DealTo(_dealerHand);
             //用規則書取得結果
-            string result = _rules.Resolve(playCard, dealerCard);
+            RoundResult result = _rules.Resolve(playCard, dealerCard);
 
-            Debug.Log(result);
+            Debug.Log(result.Reason);
         }
         #endregion 公開方法
     }
