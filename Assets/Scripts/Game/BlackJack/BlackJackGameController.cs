@@ -30,12 +30,11 @@ namespace PokerGame.Game.BlackJack
         void Start()
         {
             _session = TableSession.Instance;
+            StartRound();
         }
         #endregion 生命週期
 
         #region 公開方法
-
-        #endregion 公開方法
         /// <summary>
         /// 開局首輪
         /// </summary>
@@ -62,6 +61,8 @@ namespace PokerGame.Game.BlackJack
             PlayingCard card = _dealer.DealTo(hand.transform);
             hand.Add(card);
         }
+        #endregion 公開方法
+
         #region 私有方法
 
         #endregion 私有方法
