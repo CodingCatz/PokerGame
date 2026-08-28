@@ -51,6 +51,8 @@ namespace PokerGame.Game.BlackJack
             DealTo(_playerHand);
             DealTo(_dealerHand);
 
+            Debug.Log($"玩家：{_playerHand.Points}點");
+            Debug.Log($"莊家：{_dealerHand.Points}點");
         }
         /// <summary>
         /// 發牌至指定對象之手牌區
