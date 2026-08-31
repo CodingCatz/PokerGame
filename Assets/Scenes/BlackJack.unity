@@ -353,6 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed131ca15de2699409519b05ace60a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.Game.BlackJack.BlackJackHand
+  _sortingSpace: -1.5
 --- !u!4 &1511426640
 Transform:
   m_ObjectHideFlags: 0
@@ -397,6 +398,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392f53536c736af4aa82d30cb05f39b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.Game.BlackJack.BlackJackGameController
+  _betLabel: {fileID: 0}
+  _blanceLabel: {fileID: 0}
+  _playerPointsLabel: {fileID: 0}
+  _dealerPointseLabel: {fileID: 0}
   _dealer: {fileID: 240632672}
   _playerHand: {fileID: 1511426639}
   _dealerHand: {fileID: 2075858617}
@@ -444,6 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed131ca15de2699409519b05ace60a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.Game.BlackJack.BlackJackHand
+  _sortingSpace: 1.5
 --- !u!4 &2075858618
 Transform:
   m_ObjectHideFlags: 0

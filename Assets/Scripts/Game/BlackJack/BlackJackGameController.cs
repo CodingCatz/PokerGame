@@ -1,5 +1,7 @@
 ﻿using PokerGame.Core;
 using PokerGame.Game;
+using PokerGame.View;
+using TMPro;
 using UnityEngine;
 
 namespace PokerGame.Game.BlackJack
@@ -10,6 +12,14 @@ namespace PokerGame.Game.BlackJack
     public class BlackJackGameController : MonoBehaviour
     {
         #region UI元件
+        [SerializeField]
+        private TMP_Text _betLabel;
+        [SerializeField]
+        private TMP_Text _blanceLabel;
+        [SerializeField]
+        private TMP_Text _playerPointsLabel;
+        [SerializeField]
+        private TMP_Text _dealerPointseLabel;
         #endregion UI元件
 
         #region 欄位
@@ -17,13 +27,24 @@ namespace PokerGame.Game.BlackJack
         private Dealer _dealer;
         private TableSession _session;
         [SerializeField]
-        private BlackJackHand _playerHand;
+        private CardHandLayout _playerLayout;
         [SerializeField]
-        private BlackJackHand _dealerHand;
+        private CardHandLayout _dealerLayout;
         #endregion 欄位
 
         #region 私有欄位
-
+        /// <summary>
+        /// 回合控制資料
+        /// </summary>
+        private readonly BlackJackRound _round = new BlackJackRound();
+        /// <summary>
+        /// 同一局內玩家的手牌
+        /// </summary>
+        private BlackJackHand PlayerHand => _round.PlayerHand;
+        /// <summary>
+        /// 同一局內荷官的手牌
+        /// </summary>
+        private BlackJackHand DealerHand => _round.DealerHand;
         #endregion 私有欄位
 
         #region 生命週期
@@ -42,26 +63,24 @@ namespace PokerGame.Game.BlackJack
         {
             //荷官開局
             _dealer.BeginRound();
-            //清空手牌
-            _playerHand.Clear();
-            _dealerHand.Clear();
 
-            DealTo(_playerHand);
-            DealTo(_dealerHand);
-            DealTo(_playerHand);
-            DealTo(_dealerHand);
+            DealTo(PlayerHand, _playerLayout);
+            DealTo(DealerHand, _dealerLayout);
+            DealTo(PlayerHand, _playerLayout);
+            DealTo(DealerHand, _dealerLayout);
 
-            Debug.Log($"玩家：{_playerHand.Points}點");
-            Debug.Log($"莊家：{_dealerHand.Points}點");
+            Debug.Log($"玩家：{PlayerHand.Points}點");
+            Debug.Log($"莊家：{DealerHand.Points}點");
         }
         /// <summary>
         /// 發牌至指定對象之手牌區
         /// </summary>
-        public void DealTo(BlackJackHand hand)
+        public void DealTo(BlackJackHand hand, CardHandLayout layout)
         {
             //荷官發牌至指定手牌對象定位
-            PlayingCard card = _dealer.DealTo(hand.transform);
-            hand.Add(card);
+            PlayingCard card = _dealer.DealTo(layout.Root);
+            hand.Add(card);//資料納管
+            layout.Refresh();//視覺更新
         }
         #endregion 公開方法
 

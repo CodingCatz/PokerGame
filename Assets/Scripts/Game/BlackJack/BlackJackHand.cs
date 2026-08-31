@@ -4,15 +4,12 @@ using UnityEngine;
 
 namespace PokerGame.Game.BlackJack
 {
-
-    public class BlackJackHand : MonoBehaviour
+    /// <summary>
+    /// 21點的手牌資料(一位玩家一組)
+    /// </summary>
+    public class BlackJackHand
     {
         #region 欄位
-        /// <summary>
-        /// 卡牌排列間隔
-        /// </summary>
-        [SerializeField]
-        private float _sortingSpace = 1.5f;
         /// <summary>
         /// 手牌存放處(清單物件)
         /// </summary>
@@ -20,10 +17,7 @@ namespace PokerGame.Game.BlackJack
         #endregion 欄位
 
         #region 公開屬性
-        /// <summary>
-        /// 擁有的手牌數
-        /// </summary>
-        public int Count => _cards.Count;
+        
         /// <summary>
         /// 手牌點數總和
         /// </summary>
@@ -38,7 +32,6 @@ namespace PokerGame.Game.BlackJack
         public void Add(PlayingCard card)
         {
             _cards.Add(card);//加新資料
-            CardSorting();//處裡排序
         }
         /// <summary>
         /// 清空手牌資料(起新局)
@@ -46,15 +39,6 @@ namespace PokerGame.Game.BlackJack
         public void Clear()
         {
             _cards.Clear();
-        }
-        /// <summary>
-        /// 更新排列(視覺刷新)
-        /// </summary>
-        public void CardSorting()
-        {
-            int index = Count - 1;//子物件的索引號碼
-            //使用固定間隔倍率在X軸上移動視覺物件(以父物件為原始基礎點)
-            transform.GetChild(index).position = transform.position + Vector3.right * _sortingSpace * index;
         }
         #endregion 公開方法
 
