@@ -17,7 +17,10 @@ namespace PokerGame.Game.BlackJack
         #endregion 欄位
 
         #region 公開屬性
-        
+        /// <summary>
+        /// 手牌持有數量
+        /// </summary>
+        public int Count => _cards.Count;
         /// <summary>
         /// 手牌點數總和
         /// </summary>
