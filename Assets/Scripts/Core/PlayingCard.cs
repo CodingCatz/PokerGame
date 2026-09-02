@@ -17,6 +17,10 @@ namespace PokerGame.Core
         /// [唯讀]取得點數
         /// </summary>
         public Rank Rank { get; }
+        /// <summary>
+        /// 掀牌狀態
+        /// </summary>
+        public bool IsShowUp { get; private set; }
         #endregion 公開屬性
 
         #region 建構式
@@ -25,14 +29,29 @@ namespace PokerGame.Core
         /// </summary>
         /// <param name="suit">花色</param>
         /// <param name="rank">點數</param>
-        public PlayingCard(Suit suit, Rank rank)
+        public PlayingCard(Suit suit, Rank rank, bool showUp = true)
         {
             Suit = suit;//紀錄在上方的欄位中
             Rank = rank;
+            IsShowUp = showUp;
         }
         #endregion 建構式
 
         #region 公開方法
+        /// <summary>
+        /// 掀牌
+        /// </summary>
+        public void ShowUp()
+        {
+            IsShowUp = true;
+        }
+        /// <summary>
+        /// 蓋牌(不公布)
+        /// </summary>
+        public void Hide()
+        {
+            IsShowUp = false;
+        }
         /// <summary>
         /// 撲克牌資料的文字版
         /// </summary>

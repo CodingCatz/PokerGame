@@ -76,7 +76,7 @@ namespace PokerGame.Game.BlackJack
             _dealer.BeginRound();
 
             DealTo(PlayerHand, _playerLayout);
-            DealTo(DealerHand, _dealerLayout);
+            DealTo(DealerHand, _dealerLayout, false);//荷官第一張蓋牌
             DealTo(PlayerHand, _playerLayout);
             DealTo(DealerHand, _dealerLayout);
 
@@ -89,10 +89,10 @@ namespace PokerGame.Game.BlackJack
         /// <summary>
         /// 發牌至指定對象之手牌區
         /// </summary>
-        public void DealTo(BlackJackHand hand, CardHandLayout layout)
+        public void DealTo(BlackJackHand hand, CardHandLayout layout, bool showUp = true)
         {
             //荷官發牌至指定手牌對象定位
-            PlayingCard card = _dealer.DealTo(layout.Root);
+            PlayingCard card = _dealer.DealTo(layout.Root, showUp);
             hand.Add(card);//資料納管
             layout.Refresh();//視覺更新
         }

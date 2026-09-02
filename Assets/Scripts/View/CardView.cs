@@ -14,6 +14,7 @@ namespace PokerGame.View
         private TMP_Text _suitLabel;
         [SerializeField]
         private TMP_Text _rankLabel;
+        private SpriteRenderer _cardBack => GetComponent<SpriteRenderer>();
         #endregion UI元件
 
         #region 公開方法
@@ -27,8 +28,10 @@ namespace PokerGame.View
             _suitLabel.text = GetSuitText(card.Suit);
             _rankLabel.text = GetRankText(card.Rank);
             //改顏色
-            _suitLabel.color = GetSuitColor(card.Suit);
-            _rankLabel.color = GetSuitColor(card.Suit);
+            _suitLabel.color = card.IsShowUp ? GetSuitColor(card.Suit) : Color.clear;
+            _rankLabel.color = card.IsShowUp ? GetSuitColor(card.Suit) : Color.clear;
+            //底色
+            _cardBack.color = card.IsShowUp ? Color.white : Color.gray2;
         }
         #endregion 公開方法
 

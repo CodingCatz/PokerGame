@@ -53,10 +53,12 @@ namespace PokerGame.Game
         /// </summary>
         /// <param name="dest">目的地</param>
         /// <returns>卡牌資料</returns>
-        public PlayingCard DealTo(Transform dest)
+        public PlayingCard DealTo(Transform dest, bool showUp = true)
         {
             //抽出一張(資料)
             PlayingCard card = _deck.Draw();
+            if (showUp) card.ShowUp();
+            else card.Hide();
             //抽出一張(空閒牌面)
             CardView view = viewPool.Rent();
             //丟到所屬手牌區(目的地)
