@@ -73,6 +73,17 @@ namespace PokerGame.Game
         }
 
         /// <summary>
+        /// 顯示桌面上全部的卡牌
+        /// </summary>
+        public void ShowUpAll()
+        {
+            foreach (CardView view in _activeViews)
+            {
+                view.Active(true);
+            }
+        }
+
+        /// <summary>
         /// 將目前已發出去的牌面收回到物件池
         /// </summary>
         public void CollectAll()

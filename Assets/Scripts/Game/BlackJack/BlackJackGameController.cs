@@ -27,6 +27,8 @@ namespace PokerGame.Game.BlackJack
         private Button _hitBtn;
         [SerializeField]
         private Button _standBtn;
+        [SerializeField]
+        private Button _nextRoundBtn;
         #endregion UI元件
 
         #region 欄位
@@ -54,6 +56,10 @@ namespace PokerGame.Game.BlackJack
         /// </summary>
         private BlackJackHand DealerHand => _round.DealerHand;
         private int DealerPoints => DealerHand.Points;
+        /// <summary>
+        /// 建立荷官色略類型：StandOn17
+        /// </summary>
+        private readonly IDealerStrategy _dealerStrategy = new StandOn17();
         #endregion 私有欄位
 
         #region 生命週期
@@ -107,7 +113,11 @@ namespace PokerGame.Game.BlackJack
             //視覺
             UpdatePointsUI(_playerPointsLabel, PlayerPoints);
             //驗證(爆牌：荷官直接攤牌)
-            if (_round.CheckBust()) UpdatePointsUI(_dealerPointseLabel, DealerPoints);
+            if (_round.CheckBust())
+            {
+                UpdatePointsUI(_dealerPointseLabel, DealerPoints);
+                _dealer.ShowUpAll();
+            }
             UpdateBtnUI();//更新對應的UI
         }
         /// <summary>
@@ -116,10 +126,44 @@ namespace PokerGame.Game.BlackJack
         public void Stand()
         {
             _round.TryStand();
+            UpdateBtnUI();//更新對應的UI
+            RunDealerTurn();
+        }
+
+        /// <summary>
+        /// 再來一回
+        /// </summary>
+        public void NextRound()
+        {
+            //回收卡牌(視覺)
+            _dealer.CollectAll();
+            //起新局(資料)
+            _round.TryNewGame();
+            UpdateBtnUI();//啟動對應的UI
+            UpdatePointsUI(_playerPointsLabel, PlayerPoints);
+            UpdatePointsUI(_dealerPointseLabel, DealerPoints);
         }
         #endregion 公開方法
 
         #region 私有方法
+        /// <summary>
+        /// 執行荷官回合(策略)
+        /// </summary>
+        private void RunDealerTurn()
+        {
+            while (_dealerStrategy.ShouldHit(DealerHand))
+            {//反覆取牌到策略不允許為止
+                DealTo(DealerHand, _dealerLayout);
+                _dealerLayout.Refresh();
+            }
+            //荷官回合結束攤牌
+            UpdatePointsUI(_dealerPointseLabel, DealerPoints);
+            _dealer.ShowUpAll();
+            //遊戲總結
+            _round.TryComplete();
+
+            UpdateBtnUI();
+        }
         /// <summary>
         /// 依照遊戲狀態機啟動對應的UI
         /// </summary>
@@ -130,6 +174,8 @@ namespace PokerGame.Game.BlackJack
             //要牌/停牌?.物件.是否可見(指定狀態：玩家回合)
             _hitBtn?.gameObject.SetActive(_round.State == BlackJackRoundState.PlayerTurn);
             _standBtn?.gameObject.SetActive(_round.State == BlackJackRoundState.PlayerTurn);
+            //再來一回?.物件.是否可見(指定狀態：遊戲結束)
+            _nextRoundBtn?.gameObject.SetActive(_round.State == BlackJackRoundState.Complete);
         }
         /// <summary>
         /// 更新牌裝上對應角色的點數

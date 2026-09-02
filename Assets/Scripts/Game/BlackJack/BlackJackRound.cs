@@ -58,10 +58,27 @@ namespace PokerGame.Game.BlackJack
         {
             if (IsPlayerBust)
             {
-                State = BlackJackRoundState.Complete;
+                TryComplete();
                 return true;
             }
             return false;
+        }
+        /// <summary>
+        /// 嘗試完成牌局
+        /// </summary>
+        public void TryComplete()
+        {
+            State = BlackJackRoundState.Complete;
+            
+        }
+        /// <summary>
+        /// 嘗試開新局(資料重置)
+        /// </summary>
+        public void TryNewGame()
+        {
+            State = BlackJackRoundState.WaitingForRound;
+            PlayerHand.Clear();
+            DealerHand.Clear();
         }
         #endregion 公開方法
     }
