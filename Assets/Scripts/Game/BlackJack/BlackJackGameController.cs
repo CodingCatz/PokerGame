@@ -48,10 +48,12 @@ namespace PokerGame.Game.BlackJack
         /// 同一局內玩家的手牌
         /// </summary>
         private BlackJackHand PlayerHand => _round.PlayerHand;
+        private int PlayerPoints => PlayerHand.Points;
         /// <summary>
         /// 同一局內荷官的手牌
         /// </summary>
         private BlackJackHand DealerHand => _round.DealerHand;
+        private int DealerPoints => DealerHand.Points;
         #endregion 私有欄位
 
         #region 生命週期
@@ -59,6 +61,8 @@ namespace PokerGame.Game.BlackJack
         {
             _session = TableSession.Instance;
             UpdateBtnUI();//啟動對應的UI
+            UpdatePointsUI(_playerPointsLabel, PlayerPoints);
+            UpdatePointsUI(_dealerPointseLabel, DealerPoints);
         }
         #endregion 生命週期
 
@@ -76,10 +80,11 @@ namespace PokerGame.Game.BlackJack
             DealTo(PlayerHand, _playerLayout);
             DealTo(DealerHand, _dealerLayout);
 
-            Debug.Log($"玩家：{PlayerHand.Points}點");
+            //Debug.Log($"玩家：{PlayerHand.Points}點");
             Debug.Log($"莊家：{DealerHand.Points}點");
             _round.TryStart();//正式啟動
             UpdateBtnUI();//更新對應的UI
+            UpdatePointsUI(_playerPointsLabel, PlayerPoints);
         }
         /// <summary>
         /// 發牌至指定對象之手牌區
@@ -97,9 +102,12 @@ namespace PokerGame.Game.BlackJack
         public void Hit()
         {
             if (!_round.CanPlayerAct) return;//避免非玩家可行動誤觸
-            //發一張牌給玩家
+            //發一張牌給玩家(資料)
             DealTo(PlayerHand, _playerLayout);
-            _round.CheckBust();
+            //視覺
+            UpdatePointsUI(_playerPointsLabel, PlayerPoints);
+            //驗證(爆牌：荷官直接攤牌)
+            if (_round.CheckBust()) UpdatePointsUI(_dealerPointseLabel, DealerPoints);
             UpdateBtnUI();//更新對應的UI
         }
         /// <summary>
@@ -122,6 +130,15 @@ namespace PokerGame.Game.BlackJack
             //要牌/停牌?.物件.是否可見(指定狀態：玩家回合)
             _hitBtn?.gameObject.SetActive(_round.State == BlackJackRoundState.PlayerTurn);
             _standBtn?.gameObject.SetActive(_round.State == BlackJackRoundState.PlayerTurn);
+        }
+        /// <summary>
+        /// 更新牌裝上對應角色的點數
+        /// </summary>
+        /// <param name="tmpText">UI元件</param>
+        /// <param name="points">當下點數</param>
+        private void UpdatePointsUI(TMP_Text tmpText, int points)
+        {
+            tmpText.text = points > 0 ? $"{points}p" : "";
         }
         #endregion 私有方法
     }

@@ -53,9 +53,15 @@ namespace PokerGame.Game.BlackJack
         /// <summary>
         /// 確認是否爆牌
         /// </summary>
-        public void CheckBust()
+        /// <returns>結果回傳</returns>
+        public bool CheckBust()
         {
-            if (IsPlayerBust) State = BlackJackRoundState.Complete;
+            if (IsPlayerBust)
+            {
+                State = BlackJackRoundState.Complete;
+                return true;
+            }
+            return false;
         }
         #endregion 公開方法
     }
