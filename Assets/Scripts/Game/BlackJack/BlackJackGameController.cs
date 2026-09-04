@@ -86,6 +86,17 @@ namespace PokerGame.Game.BlackJack
             DealTo(PlayerHand, _playerLayout);
             DealTo(DealerHand, _dealerLayout);
 
+            if (_round.TryComplete())
+            {//一拿到牌就獲勝：BlackJack
+                UpdateBtnUI();//更新對應的UI
+                UpdatePointsUI(_playerPointsLabel, PlayerPoints);
+                UpdatePointsUI(_dealerPointseLabel, DealerPoints);
+                _dealer.ShowUpAll();
+                //清算
+
+                return;
+            }
+
             //Debug.Log($"玩家：{PlayerHand.Points}點");
             Debug.Log($"莊家：{DealerHand.Points}點");
             _round.TryStart();//正式啟動
@@ -113,10 +124,11 @@ namespace PokerGame.Game.BlackJack
             //視覺
             UpdatePointsUI(_playerPointsLabel, PlayerPoints);
             //驗證(爆牌：荷官直接攤牌)
-            if (_round.CheckBust())
+            if (_round.CheckBust() || _round.CheckPass5())
             {
                 UpdatePointsUI(_dealerPointseLabel, DealerPoints);
                 _dealer.ShowUpAll();
+                //清算
             }
             UpdateBtnUI();//更新對應的UI
         }
@@ -152,15 +164,19 @@ namespace PokerGame.Game.BlackJack
         private void RunDealerTurn()
         {
             while (_dealerStrategy.ShouldHit(DealerHand))
-            {//反覆取牌到策略不允許為止
+            {//反覆取牌到策略不允許 或 過5關為止
                 DealTo(DealerHand, _dealerLayout);
                 _dealerLayout.Refresh();
+                if (_round.CheckPass5()) break;//滿五張強制中斷
             }
             //荷官回合結束攤牌
             UpdatePointsUI(_dealerPointseLabel, DealerPoints);
             _dealer.ShowUpAll();
             //遊戲總結
-            _round.TryComplete();
+            if (_round.TryComplete())
+            {
+                //清算
+            }
 
             UpdateBtnUI();
         }

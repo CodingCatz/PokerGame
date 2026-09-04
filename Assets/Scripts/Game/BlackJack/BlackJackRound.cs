@@ -24,6 +24,10 @@ namespace PokerGame.Game.BlackJack
         /// </summary>
         public BlackJackHand DealerHand { get; } = new BlackJackHand();
         /// <summary>
+        /// 新起局的狀態：輔助判斷秒勝(BlackJack)
+        /// </summary>
+        public bool NewRound => State == BlackJackRoundState.WaitingForRound;
+        /// <summary>
         /// 取得當下玩家是否可以合法操作
         /// </summary>
         public bool CanPlayerAct => State == BlackJackRoundState.PlayerTurn;
@@ -63,10 +67,25 @@ namespace PokerGame.Game.BlackJack
             return false;
         }
         /// <summary>
+        /// 確認是否過五關
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckPass5()
+        {
+            if (PlayerHand.IsPass5 || DealerHand.IsPass5)
+            {
+                return TryComplete();
+            }
+            return false;
+        }
+        /// <summary>
         /// 嘗試完成牌局
         /// </summary>
         public bool TryComplete()
         {
+            //開局也可能結束：寫的是不能觸發的精準條件
+            if (NewRound && !PlayerHand.IsBlackJack) return false;
+
             State = BlackJackRoundState.Complete;
             //觸發清算
             return true;
