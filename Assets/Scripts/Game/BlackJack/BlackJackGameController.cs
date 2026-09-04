@@ -125,9 +125,9 @@ namespace PokerGame.Game.BlackJack
         /// </summary>
         public void Stand()
         {
-            _round.TryStand();
+            _round.TryStand();//狀態機改變
             UpdateBtnUI();//更新對應的UI
-            RunDealerTurn();
+            RunDealerTurn();//荷官動作
         }
 
         /// <summary>

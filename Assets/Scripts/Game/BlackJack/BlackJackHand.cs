@@ -25,6 +25,14 @@ namespace PokerGame.Game.BlackJack
         /// 手牌點數總和
         /// </summary>
         public int Points => CalculateTotal();
+        /// <summary>
+        /// 自然形成的21點(一發入魂)
+        /// </summary>
+        public bool IsBlackJack => Count == 2 && Points == 21;
+        /// <summary>
+        /// 過五關(五龍)
+        /// </summary>
+        public bool IsPass5 => Count == 5 && Points <= 21;
         #endregion 公開屬性
 
         #region 公開方法
