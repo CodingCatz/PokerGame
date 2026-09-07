@@ -1,4 +1,5 @@
-﻿using PokerGame.Core;
+﻿using PokerGame.Betting;
+using PokerGame.Core;
 using PokerGame.Game;
 using PokerGame.View;
 using System;
@@ -45,7 +46,11 @@ namespace PokerGame.Game.BlackJack
         [SerializeField]
         private CardHandLayout _dealerLayout;
         private bool _canBetting = true;
-        private int _betAmount = 100;
+        /// <summary>
+        /// 最小下注金常數
+        /// </summary>
+        private const int _minAmount = 100;
+        private int _betAmount = _minAmount;
         #endregion 欄位
 
         #region 私有欄位
@@ -53,6 +58,10 @@ namespace PokerGame.Game.BlackJack
         /// 回合控制資料
         /// </summary>
         private readonly BlackJackRound _round = new BlackJackRound();
+        /// <summary>
+        /// 雙方全部勝負組合與賠率資料(規則書)
+        /// </summary>
+        private readonly BlackJackRules _rules = new BlackJackRules();
         /// <summary>
         /// 同一局內玩家的手牌
         /// </summary>
@@ -78,7 +87,7 @@ namespace PokerGame.Game.BlackJack
         {
             _session = TableSession.Instance;
             _blanceLabel.text = _blance.ToString();
-            AddBet();//預設一注
+            ReduceBet();//預設一注(減注=跑最小值)
             UpdateBtnUI();//啟動對應的UI
             UpdatePointsUI(_playerPointsLabel, PlayerPoints);
             UpdatePointsUI(_dealerPointseLabel, DealerPoints);
@@ -108,7 +117,7 @@ namespace PokerGame.Game.BlackJack
                 UpdatePointsUI(_dealerPointseLabel, DealerPoints);
                 _dealer.ShowUpAll();
                 //清算
-
+                ResolveAndSettle();
                 return;
             }
 
@@ -133,7 +142,7 @@ namespace PokerGame.Game.BlackJack
         /// </summary>
         public void AddBet()
         {
-            _betAmount = Math.Min(_blance, _betAmount + 100);
+            _betAmount = Math.Min(_blance, _betAmount + _minAmount);
             UpdateBetUI();
         }
 
@@ -147,7 +156,14 @@ namespace PokerGame.Game.BlackJack
         /// </summary>
         public void ReduceBet()
         {
-            _betAmount = Math.Max(100, _betAmount - 100);
+            if (_blance < _minAmount)
+            {
+                _betAmount = 0;
+            }
+            else
+            {
+                _betAmount = Math.Max(_minAmount, _betAmount - _minAmount);
+            }
             UpdateBetUI();
         }
         /// <summary>
@@ -177,6 +193,7 @@ namespace PokerGame.Game.BlackJack
                 UpdatePointsUI(_dealerPointseLabel, DealerPoints);
                 _dealer.ShowUpAll();
                 //清算
+                ResolveAndSettle();
             }
             UpdateBtnUI();//更新對應的UI
         }
@@ -203,6 +220,9 @@ namespace PokerGame.Game.BlackJack
             UpdateBtnUI();//啟動對應的UI
             UpdatePointsUI(_playerPointsLabel, PlayerPoints);
             UpdatePointsUI(_dealerPointseLabel, DealerPoints);
+            _betAmount = _minAmount;
+            _betLabel.text = _betAmount.ToString();
+            _blanceLabel.text = _blance.ToString();
         }
         #endregion 公開方法
 
@@ -225,9 +245,22 @@ namespace PokerGame.Game.BlackJack
             if (_round.TryComplete())
             {
                 //清算
+                ResolveAndSettle();
             }
 
             UpdateBtnUI();
+        }
+
+        private void ResolveAndSettle()
+        {
+            if (_canBetting) return;
+            //核對勝負結果
+            RoundResult result = _rules.Resolve(PlayerHand, DealerHand);
+            //結算(回收或賠)
+            int returned = _session.Betting.Settle(result);
+            //刷新Bet & Blance
+            _betLabel.text = $"{result.Reason} - {returned}";
+            _blanceLabel.text = _blance.ToString();
         }
         /// <summary>
         /// 依照遊戲狀態機啟動對應的UI
