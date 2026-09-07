@@ -7,20 +7,9 @@ namespace PokerGame.Game.BlackJack
     /// <summary>
     /// 21點的手牌資料(一位玩家一組)
     /// </summary>
-    public class BlackJackHand
+    public class BlackJackHand : PokerHand
     {
-        #region 欄位
-        /// <summary>
-        /// 手牌存放處(清單物件)
-        /// </summary>
-        private readonly List<PlayingCard> _cards = new List<PlayingCard>();
-        #endregion 欄位
-
         #region 公開屬性
-        /// <summary>
-        /// 手牌持有數量
-        /// </summary>
-        public int Count => _cards.Count;
         /// <summary>
         /// 手牌點數總和
         /// </summary>
@@ -40,16 +29,10 @@ namespace PokerGame.Game.BlackJack
         /// 將撲克牌加入手牌
         /// </summary>
         /// <param name="card">撲克牌資料</param>
-        public void Add(PlayingCard card)
+        public override void Add(PlayingCard card)
         {
-            _cards.Add(card);//加新資料
-        }
-        /// <summary>
-        /// 清空手牌資料(起新局)
-        /// </summary>
-        public void Clear()
-        {
-            _cards.Clear();
+            base.Add(card);
+            Debug.Log("ADD測試");
         }
         #endregion 公開方法
 
