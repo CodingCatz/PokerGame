@@ -25,7 +25,7 @@ namespace PokerGame.Game.BigTwo
         /// <summary>
         /// 遊戲的延遲時間(速度)，對外公開可調的接口
         /// </summary>
-        [Range(0.2f, 2f)]//轉成有範圍的拉桿
+        [Range(0.1f, 2f)]//轉成有範圍的拉桿
         [SerializeField]
         private float _delayTime = 1f;
         /// <summary>
@@ -105,7 +105,8 @@ namespace PokerGame.Game.BigTwo
         {
             _dealer.BeginRound();
             ClearHands();
-            StartDeal(GameSpeed);
+            //外部任務捨棄(因為沒有要排隊)
+            _ = StartDeal(GameSpeed);
         }
 
         /// <summary>
