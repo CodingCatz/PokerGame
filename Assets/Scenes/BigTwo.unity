@@ -150,6 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.Game.BigTwo.BigTwoGameController
   _dealer: {fileID: 971224388}
   _statusLabel: {fileID: 1173744972}
+  _delayTime: 1
   _playerLayouts:
   - {fileID: 518257561}
   - {fileID: 1752144342}
@@ -630,7 +631,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52f10664d95a4e34595bc42474e53cf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
-  _sortingSpace: 1.5
+  _sortingSpace: 1
 --- !u!4 &1217788411
 Transform:
   m_ObjectHideFlags: 0
@@ -639,13 +640,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1217788409}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 6.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &1513067431
 GameObject:
   m_ObjectHideFlags: 0
@@ -720,7 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52f10664d95a4e34595bc42474e53cf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
-  _sortingSpace: 1.5
+  _sortingSpace: 1
 --- !u!4 &1752144343
 Transform:
   m_ObjectHideFlags: 0
@@ -729,13 +730,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1752144341}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -6.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
