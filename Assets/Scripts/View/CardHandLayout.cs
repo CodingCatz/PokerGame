@@ -1,4 +1,5 @@
 ﻿using PokerGame.Core;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,6 +38,7 @@ namespace PokerGame.View
         /// <summary>
         /// 卡牌排列間隔
         /// </summary>
+        [Range(0.5f, 1.5f)]
         [SerializeField]
         private float _sortingSpace = 1.5f;
         #endregion 欄位
@@ -70,11 +72,25 @@ namespace PokerGame.View
                 transform.GetChild(i).position =
                     //定位原點(加上偏移)
                     transform.position + Offset(index) +
-                    //篇移方向(可能因為Mode.Left轉負)
+                    //偏移方向(可能因為Mode.Left轉負)
                     Direction * transform.right * _sortingSpace * i;
             }
             
         }
+        /// <summary>
+        /// 重新綁定資料和視覺(資料次序有變化時，視覺需要同步更新)
+        /// </summary>
+        /// <param name="cards"></param>
+        public void ReBindCards(IReadOnlyList<PlayingCard> cards)
+        {
+            for (int i = 0; i < cards.Count; i++)
+            {//逐一重綁資料和視覺元件
+                transform.GetChild(i).GetComponent<CardView>().Bind(cards[i]);
+            }
+            //順手刷新
+            //Refresh();
+        }
+
         /// <summary>
         /// 給Center專用
         /// (向左偏移起點，分一半的總長到左邊)

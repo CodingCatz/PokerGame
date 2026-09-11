@@ -1,10 +1,11 @@
-using PokerGame.View;
-using UnityEngine;
-using TMPro;
-using System.Collections.Generic;
-using System;
 using PokerGame.Core;
+using PokerGame.View;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
+using UnityEngine;
+using UnityEngine.XR;
 
 namespace PokerGame.Game.BigTwo
 {
@@ -121,13 +122,17 @@ namespace PokerGame.Game.BigTwo
                 for (int playerIndex = 0; playerIndex < _hands.Count; playerIndex++)
                 {
                     //視覺實體+資料分配：各玩家
-                    PlayingCard card = _dealer.DealTo(_playerLayouts[playerIndex].Root);
+                    PlayingCard card = _dealer.DealTo(_playerLayouts[playerIndex].Root/*, playerIndex == 0*/);
                     _hands[playerIndex].Add(card);
                     //狀態更新
                     _playerLayouts[playerIndex].Refresh();
                     await Task.Delay(msec);//等待：延遲任務
                 }
             }
+            //資料排序
+            _hands[0].Sort();
+            //整理過的資料和視覺重綁+排版
+            _playerLayouts[0].ReBindCards(_hands[0].Cards);
         }
         #endregion 私有方法
     }

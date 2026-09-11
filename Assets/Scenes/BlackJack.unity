@@ -2409,7 +2409,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52f10664d95a4e34595bc42474e53cf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
-  _sortingSpace: -1.5
+  _mode: -1
+  _sortingSpace: 1.5
 --- !u!1 &1568024271
 GameObject:
   m_ObjectHideFlags: 0
@@ -2826,6 +2827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52f10664d95a4e34595bc42474e53cf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
+  _mode: 1
   _sortingSpace: 1.5
 --- !u!1 &2097399985
 GameObject:

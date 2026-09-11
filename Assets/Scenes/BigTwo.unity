@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.65
+  _sortingSpace: 0.6
 --- !u!4 &518257562
 Transform:
   m_ObjectHideFlags: 0
@@ -633,7 +633,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.65
+  _sortingSpace: 0.6
 --- !u!4 &1217788411
 Transform:
   m_ObjectHideFlags: 0
@@ -679,7 +679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.65
+  _sortingSpace: 0.6
 --- !u!4 &1513067433
 Transform:
   m_ObjectHideFlags: 0
@@ -725,7 +725,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.65
+  _sortingSpace: 0.6
 --- !u!4 &1752144343
 Transform:
   m_ObjectHideFlags: 0
