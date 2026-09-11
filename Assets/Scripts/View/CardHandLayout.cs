@@ -1,6 +1,7 @@
 ﻿using PokerGame.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace PokerGame.View
@@ -87,10 +88,21 @@ namespace PokerGame.View
             {//逐一重綁資料和視覺元件
                 transform.GetChild(i).GetComponent<CardView>().Bind(cards[i]);
             }
-            //順手刷新
-            //Refresh();
         }
+        /// <summary>
+        /// 選取上浮視覺提示功能
+        /// </summary>
+        /// <param name="selectionIndexs">選取卡牌索引號清單</param>
+        public void SelectionToggle(IReadOnlyList<int> selectionIndexs)
+        {
+            for (int i = 0; i < Count; i++)
+            {//全部子物件過一次檢查
+                SelectionPop(transform.GetChild(i), selectionIndexs.Contains(i));
+            } 
+        }
+        #endregion 公開方法
 
+        #region 私有功能
         /// <summary>
         /// 給Center專用
         /// (向左偏移起點，分一半的總長到左邊)
@@ -103,7 +115,18 @@ namespace PokerGame.View
                 //左邊 * 一半的總長 * 間格倍率
                 (-1 * transform.right) * (index / 2) * _sortingSpace : Vector3.zero;
         }
-        #endregion 公開方法
+        /// <summary>
+        /// 更新選取卡牌的POP位置
+        /// </summary>
+        /// <param name="transform">卡牌的Transform</param>
+        /// <param name="isSelected">是否為選取對象</param>
+        private void SelectionPop(Transform transform, bool isSelected)
+        {
+            Vector3 pos = transform.localPosition;//紀錄原點(基於父物件)
+            pos.y = isSelected ? 1 : 0;//是否選取：往上 或 不動(歸零)
+            transform.localPosition = pos;//重新定位
+        }
+        #endregion 私有功能
     }
 }
 

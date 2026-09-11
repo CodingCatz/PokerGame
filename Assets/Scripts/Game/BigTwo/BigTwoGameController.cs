@@ -30,14 +30,23 @@ namespace PokerGame.Game.BigTwo
         [SerializeField]
         private float _delayTime = 1f;
         /// <summary>
-        /// 視覺排版
+        /// 視覺排版(玩家們)
         /// </summary>
         [SerializeField]
         private CardHandLayout[] _playerLayouts;
         /// <summary>
+        /// 視覺排版(桌面)
+        /// </summary>
+        [SerializeField]
+        private CardHandLayout _tableLayout;
+        /// <summary>
         /// 手牌資料
         /// </summary>
         private readonly List<BigTwoHand> _hands = new List<BigTwoHand>();
+        /// <summary>
+        /// 操作者的卡牌選取器(共用)
+        /// </summary>
+        private readonly BigTwoSelection _selection = new BigTwoSelection();
         #endregion 欄位
 
         #region 公開屬性
@@ -65,7 +74,7 @@ namespace PokerGame.Game.BigTwo
             //建立手牌資料容器 * 4
             EnsureHands();
             //開始發牌(訊息)
-            _statusLabel.text = "Start Deal Four Hands.";
+            UpdateStatusUI("Start Deal Four Hands.");
         }
 
         public override void ExitMode()
@@ -75,10 +84,28 @@ namespace PokerGame.Game.BigTwo
             ClearHands();
         }
 
-
+        public void SelectCard()
+        {
+            List<int> list = new List<int>();
+            _selection.Toggle(_hands[0].Cards[0]);
+            _selection.Toggle(_hands[0].Cards[5]);
+            _selection.Toggle(_hands[0].Cards[7]);
+            list.Add(0);
+            list.Add(5);
+            list.Add(7);
+            _playerLayouts[0].SelectionToggle(list);
+        }
         #endregion 公開方法
 
         #region 私有方法
+        /// <summary>
+        /// 更新狀態文字UI
+        /// </summary>
+        /// <param name="msg">訊息</param>
+        private void UpdateStatusUI(string msg)
+        {
+            _statusLabel.text = msg;
+        }
         /// <summary>
         /// 確認(建立)四組玩家手牌容器
         /// </summary>
@@ -129,10 +156,16 @@ namespace PokerGame.Game.BigTwo
                     await Task.Delay(msec);//等待：延遲任務
                 }
             }
-            //資料排序
-            _hands[0].Sort();
-            //整理過的資料和視覺重綁+排版
-            _playerLayouts[0].ReBindCards(_hands[0].Cards);
+
+            UpdateStatusUI("Players are Sorting.");
+            for (int i = 0; i < _hands.Count; i++)
+            {
+                //資料排序
+                _hands[i].Sort();
+                //整理過的資料和視覺重綁+排版
+                _playerLayouts[i].ReBindCards(_hands[i].Cards);
+                await Task.Delay(msec);//等待：延遲任務
+            }
         }
         #endregion 私有方法
     }
