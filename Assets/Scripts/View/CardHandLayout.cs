@@ -131,12 +131,9 @@ namespace PokerGame.View
             }
             if (index < 0) return;
             //有搜索到才執行以下
-
-            for (int i = 0; i < Count; i++)
-            {//全部子物件過一次檢查
-                SelectionPop(transform.GetChild(i), selectedIndexs.Contains(i));
-            }
+            SelectionPopUpdate();
         }
+
         /// <summary>
         /// 點選的卡牌序號加入(選取)
         /// </summary>
@@ -153,16 +150,19 @@ namespace PokerGame.View
         {
             selectedIndexs.Remove(index);
         }
+        /// <summary>
+        /// 清除選取紀錄
+        /// </summary>
         public void ClearSelectedIndex()
         {
             selectedIndexs.Clear();
         }
 
-        public void MoveCardsTo(IReadOnlyList<int> indexs, CardHandLayout target)
+        public void MoveCardsTo(CardHandLayout target)
         {
-            foreach (int i in indexs)
+            for (int i = selectedIndexs.Count - 1; i >= 0; i--)
             {
-                transform.GetChild(i).SetParent(target.Root, false);
+                transform.GetChild(selectedIndexs[i]).SetParent(target.Root, false);
             }
             //因為牌交換：雙方刷新
             Refresh();
@@ -184,7 +184,7 @@ namespace PokerGame.View
                 (-1 * transform.right) * (index / 2) * _sortingSpace : Vector3.zero;
         }
         /// <summary>
-        /// 更新選取卡牌的POP位置
+        /// 更新選取卡牌的POP位置(單一物件)
         /// </summary>
         /// <param name="transform">卡牌的Transform</param>
         /// <param name="isSelected">是否為選取對象</param>
@@ -194,6 +194,17 @@ namespace PokerGame.View
             pos.y = isSelected ? 1 : 0;//是否選取：往上 或 不動(歸零)
             transform.localPosition = pos;//重新定位
         }
+        /// <summary>
+        /// 更新選取卡牌的POP整體刷新
+        /// </summary>
+        private void SelectionPopUpdate()
+        {
+            for (int i = 0; i < Count; i++)
+            {//全部子物件過一次檢查
+                SelectionPop(transform.GetChild(i), selectedIndexs.Contains(i));
+            }
+        }
+
         #endregion 私有功能
     }
 }

@@ -149,7 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.6
+  _sortingSpace: 1.1
+  _selectedMaxCount: 5
 --- !u!4 &18281561
 Transform:
   m_ObjectHideFlags: 0
@@ -158,13 +159,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 18281559}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &239138799
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,7 +352,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.6
+  _sortingSpace: 0.75
+  _selectedMaxCount: 5
 --- !u!4 &518257562
 Transform:
   m_ObjectHideFlags: 0
@@ -1053,7 +1055,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.6
+  _sortingSpace: 0.5
+  _selectedMaxCount: 5
 --- !u!4 &1217788411
 Transform:
   m_ObjectHideFlags: 0
@@ -1063,7 +1066,7 @@ Transform:
   m_GameObject: {fileID: 1217788409}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 6.5, y: 0, z: 0}
+  m_LocalPosition: {x: 7.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1099,7 +1102,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.6
+  _sortingSpace: 0.5
+  _selectedMaxCount: 5
 --- !u!4 &1513067433
 Transform:
   m_ObjectHideFlags: 0
@@ -1224,7 +1228,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PokerGame.View.CardHandLayout
   _mode: 0
-  _sortingSpace: 0.6
+  _sortingSpace: 0.5
+  _selectedMaxCount: 5
 --- !u!4 &1752144343
 Transform:
   m_ObjectHideFlags: 0
@@ -1234,7 +1239,7 @@ Transform:
   m_GameObject: {fileID: 1752144341}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -6.5, y: 0, z: 0}
+  m_LocalPosition: {x: -7.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

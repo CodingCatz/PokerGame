@@ -86,14 +86,7 @@ namespace PokerGame.Game.BigTwo
 
         public void SelectCard()
         {
-            List<int> list = new List<int>();
-            _selection.Toggle(_hands[0].Cards[0]);
-            _selection.Toggle(_hands[0].Cards[5]);
-            _selection.Toggle(_hands[0].Cards[7]);
-            list.Add(0);
-            list.Add(5);
-            list.Add(7);
-            _playerLayouts[0].SelectionToggle(list);
+            _playerLayouts[0].MoveCardsTo(_tableLayout);
         }
 
         public void CardViewClick(CardView view)
