@@ -42,6 +42,12 @@ namespace PokerGame.View
         [Range(0.5f, 1.5f)]
         [SerializeField]
         private float _sortingSpace = 1.5f;
+        [SerializeField]
+        private int _selectedMaxCount = 5;
+        /// <summary>
+        /// Layout上被選取的序列號清單
+        /// </summary>
+        private List<int> selectedIndexs = new List<int>();
         #endregion 欄位
 
         #region 公開屬性
@@ -56,7 +62,11 @@ namespace PokerGame.View
         /// <summary>
         /// 排列方向
         /// </summary>
-        public int Direction => _mode == AlignmentMode.Left ? -1 : 1;  
+        public int Direction => _mode == AlignmentMode.Left ? -1 : 1;
+        /// <summary>
+        /// 選取張數是否到達上限
+        /// </summary>
+        public bool SelectedLimit => selectedIndexs.Count >= _selectedMaxCount;
         #endregion 公開屬性
 
         #region 公開方法
@@ -99,6 +109,53 @@ namespace PokerGame.View
             {//全部子物件過一次檢查
                 SelectionPop(transform.GetChild(i), indexs.Contains(i));
             } 
+        }
+        /// <summary>
+        /// 選取上浮視覺提示功能(使用內部記憶)
+        /// </summary>
+        public void SelectionToggle(CardView view)
+        {
+            int index = -1;
+            for (int i = 0; i < Count; i++)
+            {
+                if (transform.GetChild(i).gameObject == view.gameObject)
+                {//找到對應：紀錄後停止搜索
+                    index = i;
+
+                    if (selectedIndexs.Contains(index))
+                        //點選的卡牌序號是否包含於已選清單內
+                        RemoveSelectedIndex(index);//若有：就移除(取消選取)
+                    else if(!SelectedLimit) AddSelectedIndex(index);//若無：就加入(選取)
+                    break;
+                }
+            }
+            if (index < 0) return;
+            //有搜索到才執行以下
+
+            for (int i = 0; i < Count; i++)
+            {//全部子物件過一次檢查
+                SelectionPop(transform.GetChild(i), selectedIndexs.Contains(i));
+            }
+        }
+        /// <summary>
+        /// 點選的卡牌序號加入(選取)
+        /// </summary>
+        /// <param name="index"></param>
+        public void AddSelectedIndex(int index)
+        {
+            selectedIndexs.Add(index);
+        }
+        /// <summary>
+        /// 點選的卡牌序號移除(取消選取)
+        /// </summary>
+        /// <param name="index"></param>
+        public void RemoveSelectedIndex(int index)
+        {
+            selectedIndexs.Remove(index);
+        }
+        public void ClearSelectedIndex()
+        {
+            selectedIndexs.Clear();
         }
 
         public void MoveCardsTo(IReadOnlyList<int> indexs, CardHandLayout target)

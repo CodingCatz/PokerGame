@@ -98,7 +98,7 @@ namespace PokerGame.Game.BigTwo
 
         public void CardViewClick(CardView view)
         {
-            Debug.Log(view.name);
+            _playerLayouts[0].SelectionToggle(view);
         }
         #endregion 公開方法
 
