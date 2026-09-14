@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PokerGame.Core;
 using PokerGame.View;
 using UnityEngine;
@@ -49,7 +50,32 @@ namespace PokerGame.Game
             _deck.Shuffle();
         }
         /// <summary>
-        /// 發牌給某人
+        /// 發牌給某人(附加點擊行為)
+        /// </summary>
+        /// <param name="dest">目的地</param>
+        /// <returns>卡牌資料</returns>
+        public PlayingCard DealTo(Transform dest, Action<CardView> clickAction, bool showUp = true)
+        {
+            //抽出一張(資料)
+            PlayingCard card = _deck.Draw();
+            if (showUp) card.ShowUp();
+            else card.Hide();
+            //抽出一張(空閒牌面)
+            CardView view = viewPool.Rent();
+            //丟到所屬手牌區(目的地)
+            view.transform.SetParent(dest, false);
+            //資料與視覺組合
+            view.Bind(card);
+            //綁定點擊附加行為
+            if (clickAction != null) view.SetClickAction(clickAction);
+            //紀錄已發出去的牌面實體(物件池回收參考清單)
+            _activeViews.Add(view);
+
+            //傳出去
+            return card;
+        }
+        /// <summary>
+        /// 發牌給某人(無Action)
         /// </summary>
         /// <param name="dest">目的地</param>
         /// <returns>卡牌資料</returns>

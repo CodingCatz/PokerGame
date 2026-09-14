@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using PokerGame.Core;
+using System;
 
 namespace PokerGame.View
 {
@@ -19,9 +20,30 @@ namespace PokerGame.View
 
         #region 私有欄位
         private Color orgColor;
+        /// <summary>
+        /// 委託的動作(方法欄位)，最大彈性化功能設計
+        /// </summary>
+        private Action<CardView> OnClick;
         #endregion 私有欄位
 
+        #region 生命週期
+        private void OnMouseDown()
+        {//有方法被委託才執行
+            //if (OnClick != null) OnClick(this);
+            OnClick?.Invoke(this);//安全防呆簡寫
+        }
+        #endregion 生命週期
+
         #region 公開方法
+        /// <summary>
+        /// 註冊綁定點擊時要執行的功能
+        /// </summary>
+        /// <param name="action">功能委託</param>
+        public void SetClickAction(Action<CardView> action)
+        {
+            //從別處(其他腳本)傳遞過來的委派功能
+            OnClick = action;
+        }
         /// <summary>
         /// 將視覺與資料同步(綁定)
         /// </summary>

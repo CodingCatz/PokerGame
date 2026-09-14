@@ -95,6 +95,11 @@ namespace PokerGame.Game.BigTwo
             list.Add(7);
             _playerLayouts[0].SelectionToggle(list);
         }
+
+        public void CardViewClick(CardView view)
+        {
+            Debug.Log(view.name);
+        }
         #endregion 公開方法
 
         #region 私有方法
@@ -149,7 +154,11 @@ namespace PokerGame.Game.BigTwo
                 for (int playerIndex = 0; playerIndex < _hands.Count; playerIndex++)
                 {
                     //視覺實體+資料分配：各玩家
-                    PlayingCard card = _dealer.DealTo(_playerLayouts[playerIndex].Root/*, playerIndex == 0*/);
+                    PlayingCard card = playerIndex == 0 ? //玩家本身
+                        //幫他綁定 CardViewClick 卡牌被點擊時要做的事情
+                        _dealer.DealTo(_playerLayouts[playerIndex].Root, CardViewClick) :
+                        //其他 NPC 走原始流程
+                        _dealer.DealTo(_playerLayouts[playerIndex].Root/*, playerIndex == 0*/);
                     _hands[playerIndex].Add(card);
                     //狀態更新
                     _playerLayouts[playerIndex].Refresh();

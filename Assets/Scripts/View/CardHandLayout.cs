@@ -92,13 +92,24 @@ namespace PokerGame.View
         /// <summary>
         /// 選取上浮視覺提示功能
         /// </summary>
-        /// <param name="selectionIndexs">選取卡牌索引號清單</param>
-        public void SelectionToggle(IReadOnlyList<int> selectionIndexs)
+        /// <param name="indexs">選取卡牌索引號清單</param>
+        public void SelectionToggle(IReadOnlyList<int> indexs)
         {
             for (int i = 0; i < Count; i++)
             {//全部子物件過一次檢查
-                SelectionPop(transform.GetChild(i), selectionIndexs.Contains(i));
+                SelectionPop(transform.GetChild(i), indexs.Contains(i));
             } 
+        }
+
+        public void MoveCardsTo(IReadOnlyList<int> indexs, CardHandLayout target)
+        {
+            foreach (int i in indexs)
+            {
+                transform.GetChild(i).SetParent(target.Root, false);
+            }
+            //因為牌交換：雙方刷新
+            Refresh();
+            target.Refresh();
         }
         #endregion 公開方法
 
