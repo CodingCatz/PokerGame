@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.XR;
+using UnityEngine.UI;
 
 namespace PokerGame.Game.BigTwo
 {
@@ -20,6 +20,16 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         [SerializeField]
         private TMP_Text _statusLabel;
+        /// <summary>
+        /// [UI]出牌按鈕
+        /// </summary>
+        [SerializeField]
+        private Button _playBtn;
+        /// <summary>
+        /// [UI]出牌按鈕上的提醒文字
+        /// </summary>
+        [SerializeField]
+        private TMP_Text _playLabel;
         #endregion UI元件
 
         #region 欄位
@@ -47,6 +57,7 @@ namespace PokerGame.Game.BigTwo
         /// 操作者的卡牌選取器(共用)
         /// </summary>
         private readonly BigTwoSelection _selection = new BigTwoSelection();
+        private readonly BigTwoCombinationEvaluator _evaluator = new BigTwoCombinationEvaluator();
         #endregion 欄位
 
         #region 公開屬性
@@ -83,15 +94,27 @@ namespace PokerGame.Game.BigTwo
             _dealer.CollectAll();
             ClearHands();
         }
-
-        public void SelectCard()
+        /// <summary>
+        /// [UI按鈕]出牌(選取的)
+        /// </summary>
+        public void PlaySelectedCards()
         {
             _playerLayouts[0].MoveCardsTo(_tableLayout);
         }
-
+        /// <summary>
+        /// [被委派]每個CardView的點擊觸發
+        /// </summary>
+        /// <param name="view"></param>
         public void CardViewClick(CardView view)
         {
-            _playerLayouts[0].SelectionToggle(view);
+            //手牌 Layout 被選中的視覺對應序號紀錄
+            int index = _playerLayouts[0].SelectionToggle(view);
+            if (index < 0) return;
+            //執行選取紀錄
+            _selection.Toggle(_hands[0].Cards[index]);
+            //送驗牌員：紀錄是否成配對成組
+            bool canPlay = _evaluator.TryEvaluate(_selection.Cards);
+            _playBtn.gameObject.SetActive(canPlay);
         }
         #endregion 公開方法
 

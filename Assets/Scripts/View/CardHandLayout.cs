@@ -113,9 +113,9 @@ namespace PokerGame.View
         /// <summary>
         /// 選取上浮視覺提示功能(使用內部記憶)
         /// </summary>
-        public void SelectionToggle(CardView view)
+        public int SelectionToggle(CardView view)
         {
-            int index = -1;
+            int index = -1;//沒有選取語意的預設值
             for (int i = 0; i < Count; i++)
             {
                 if (transform.GetChild(i).gameObject == view.gameObject)
@@ -130,9 +130,10 @@ namespace PokerGame.View
                     break;
                 }
             }
-            if (index < 0) return;
             //有搜索到才執行以下
             SelectionPopUpdate();
+
+            return index;
         }
 
         /// <summary>
