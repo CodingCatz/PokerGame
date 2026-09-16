@@ -125,7 +125,8 @@ namespace PokerGame.View
                     if (selectedIndexs.Contains(index))
                         //點選的卡牌序號是否包含於已選清單內
                         RemoveSelectedIndex(index);//若有：就移除(取消選取)
-                    else if(!SelectedLimit) AddSelectedIndex(index);//若無：就加入(選取)
+                    //若無 & 在選取限制下：就加入(選取)
+                    else if (!SelectedLimit) AddSelectedIndex(index);
                     break;
                 }
             }
@@ -160,13 +161,16 @@ namespace PokerGame.View
 
         public void MoveCardsTo(CardHandLayout target)
         {
-            for (int i = selectedIndexs.Count - 1; i >= 0; i--)
+            selectedIndexs.Sort();//正序排列 (小到大)
+            selectedIndexs.Reverse();//排序顛倒 (大到小)
+            for (int i = 0; i < selectedIndexs.Count; i++)
             {
                 transform.GetChild(selectedIndexs[i]).SetParent(target.Root, false);
             }
-            //因為牌交換：雙方刷新
+            //因為牌交換：雙方刷新、選取(序號)紀錄清除
             Refresh();
             target.Refresh();
+            ClearSelectedIndex();
         }
         #endregion 公開方法
 

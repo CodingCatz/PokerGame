@@ -12,6 +12,9 @@ namespace PokerGame.Game.BigTwo
         #endregion 私有欄位
 
         #region 公開方法
+        /// <summary>
+        /// 基本的大小排序功能
+        /// </summary>
         public override void Sort()
         {
             _cards.Sort(_comparer);
