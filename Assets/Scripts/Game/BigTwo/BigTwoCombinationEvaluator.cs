@@ -55,6 +55,8 @@ namespace PokerGame.Game.BigTwo
             //驗鐵支是否成立
 
             //驗葫蘆是否成立
+            Dictionary<Rank, int> counts = CountRanks(cards);//記下所有的牌出現幾次
+
 
             //驗同花是否成立
             if (AllSuitMatch(cards))
@@ -73,6 +75,38 @@ namespace PokerGame.Game.BigTwo
             return false;
         }
 
+        /// <summary>
+        /// 查詢並用字典紀錄每個 RANK 值出現幾次
+        /// </summary>
+        private Dictionary<Rank, int> CountRanks(IReadOnlyList<PlayingCard> cards)
+        {
+            //使用字典<關鍵值,對應數據>：指定的RANK出現幾次(int)
+            Dictionary<Rank, int> counts = new Dictionary<Rank, int>();
+
+            foreach (var card in cards) 
+            {
+                //該數值第一次出現先初始化：設為0
+                if (!counts.ContainsKey(card.Rank)) counts[card.Rank] = 0;
+                //美出現一次：疊加 1 次
+                counts[card.Rank]++;
+            }
+
+            return counts;
+        }
+
+        /// <summary>
+        /// 用字典查詢符合的預期數量對應的 RANK
+        /// </summary>
+        private int FindRankWithCount(Dictionary<Rank, int>counts, int expectedCount)
+        {
+            foreach (KeyValuePair<Rank, int> item in counts) 
+            {
+                if (item.Value == expectedCount) 
+                    return BigTwoCardCompaer.GetRankStrength(item.Key);
+            }
+            return 0;
+        }
+        
         /// <summary>
         /// 取得牌組內最高的RANK
         /// </summary>

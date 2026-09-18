@@ -24,22 +24,22 @@ namespace PokerGame.Game.BigTwo
             List<int> ranks = new List<int>();//為了產生順子新次序建立清單
             foreach (PlayingCard card in cards) 
             {//以A後面可接2的情況去跑：只把A當14使用，2維持原樣
-                int rank = card.Rank == Rank.Ace ? 14 : (int)card.Rank;
+                int rank = BigTwoCardCompaer.GetRankStrength(card.Rank);
                 ranks.Add(rank);
             }
             ranks.Sort();
-            if (Matches(ranks, 2, 3, 4, 5, 6))
-            {//特規最大
+            if (Matches(ranks, 3, 4, 5, 6, 15))
+            {//特規最大(23456)
                 strength = 16;
                 return true;
             }
-            if (Matches(ranks, 2, 11, 12, 13, 14))
-            {//A可接2
+            if (Matches(ranks, 11, 12, 13, 14, 15))
+            {//A可接2(JQKA2)
                 strength = 16;
                 return true;
             }
-            if (Matches(ranks, 2, 3, 4, 5, 14))
-            {//特規次大
+            if (Matches(ranks, 3, 4, 5, 14, 15))
+            {//特規次大(A2345)
                 strength = 15;
                 return true;
             }
