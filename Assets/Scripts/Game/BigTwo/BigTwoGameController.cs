@@ -113,8 +113,11 @@ namespace PokerGame.Game.BigTwo
             //執行選取紀錄
             _selection.Toggle(_hands[0].Cards[index]);
             //送驗牌員：紀錄是否成配對成組
-            bool canPlay = _evaluator.TryEvaluate(_selection.Cards);
+            bool canPlay = _evaluator.TryEvaluate(_selection.Cards, out BigTwoPlay play);
+            //出牌鈕狀態更新
             _playBtn.gameObject.SetActive(canPlay);
+            //印出牌型
+            if (play != null) _playLabel.text = play.Type.ToString();
         }
         #endregion 公開方法
 
