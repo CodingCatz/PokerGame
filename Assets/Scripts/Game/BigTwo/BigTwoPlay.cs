@@ -19,6 +19,10 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         public IReadOnlyList<PlayingCard> Cards { get; }
         /// <summary>
+        /// 配對組合的強度
+        /// </summary>
+        public int Strength { get; }
+        /// <summary>
         /// 取得牌組卡牌數量
         /// </summary>
         public int Count => Cards.Count;
@@ -28,12 +32,11 @@ namespace PokerGame.Game.BigTwo
         /// <summary>
         /// 出牌的資料建立
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="cards"></param>
-        public BigTwoPlay(BigTwoCombinationType type, IReadOnlyList<PlayingCard> cards)
+        public BigTwoPlay(BigTwoCombinationType type, IReadOnlyList<PlayingCard> cards, int strength)
         {
             Type = type;
             Cards = cards;
+            Strength = strength;
         }
         #endregion 建構式
     }

@@ -30,7 +30,7 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         /// <param name="rank">原本的點數值</param>
         /// <returns>翻譯後的點數值</returns>
-        public int GetRankStrength(Rank rank)
+        public static int GetRankStrength(Rank rank)
         {
             switch (rank)
             {

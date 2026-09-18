@@ -22,10 +22,12 @@ namespace PokerGame.Game.BigTwo
             //未選 or 選4 都無法成組
             if (cards.Count < 1 || cards.Count == 4) return false;
 
+            if (cards.Count == 5) return CheckEvaluateFive(cards, out play);
+
             //1張以上開始做組合驗證
             if (cards.Count == 1)
             {
-                play = new BigTwoPlay(BigTwoCombinationType.Single, cards);
+                play = new BigTwoPlay(BigTwoCombinationType.Single, cards, (int)cards[0].Rank);
                 return true;
             }
             //是否全部同點
@@ -35,12 +37,71 @@ namespace PokerGame.Game.BigTwo
                 BigTwoCombinationType.Pair :
                 BigTwoCombinationType.Triple;
 
-            play = new BigTwoPlay(type, cards);
+            play = new BigTwoPlay(type, cards, (int)cards[0].Rank);
             return true;
         }
         #endregion 公開方法
 
         #region 私有方法
+        /// <summary>
+        /// 5張牌的專屬檢驗區塊
+        /// </summary>
+        private bool CheckEvaluateFive(IReadOnlyList<PlayingCard> cards, out BigTwoPlay play)
+        {
+            play = null;
+
+            //驗同花順是否成立
+
+            //驗鐵支是否成立
+
+            //驗葫蘆是否成立
+
+            //驗同花是否成立
+            if (AllSuitMatch(cards))
+            {
+                play = new BigTwoPlay(BigTwoCombinationType.Flush, cards, GetHighestRank(cards));
+                return true;
+            }
+
+            //驗順子是否成立
+            if (BigTwoStraightRules.TryGetStraight(cards, out int strength))
+            {
+                play = new BigTwoPlay(BigTwoCombinationType.Straight, cards, strength);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 取得牌組內最高的RANK
+        /// </summary>
+        private int GetHighestRank(IReadOnlyList<PlayingCard> cards)
+        {
+            int highestRank = 0;
+
+            foreach (var card in cards) 
+            {//遍歷：看到更高就記下
+                int rank = BigTwoCardCompaer.GetRankStrength(card.Rank);
+                if (rank > highestRank) highestRank = rank;
+            }
+
+            return highestRank;
+        }
+
+        /// <summary>
+        /// 確認清單內所有牌花色都與第一張相同
+        /// </summary>
+        /// <param name="cards">卡牌清單</param>
+        /// <returns>是否全同</returns>
+        private bool AllSuitMatch(IReadOnlyList<PlayingCard> cards)
+        {
+            for (int i = 1; i < cards.Count; i++)
+            {//只要查到一張不同就失敗
+                if (cards[i].Suit != cards[0].Suit) return false;
+            }
+            return true;//完全相同
+        }
         /// <summary>
         /// 確認清單內所有牌點數都與第一張相同
         /// </summary>
