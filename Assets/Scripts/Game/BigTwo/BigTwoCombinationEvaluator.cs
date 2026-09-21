@@ -49,24 +49,46 @@ namespace PokerGame.Game.BigTwo
         private bool CheckEvaluateFive(IReadOnlyList<PlayingCard> cards, out BigTwoPlay play)
         {
             play = null;
-
+            //是否同花
+            bool isFlush = AllSuitMatch(cards);
+            //是否順子
+            bool isStraight = BigTwoStraightRules.TryGetStraight(cards, out int strength);
+            //記下所有的牌(值)出現幾次
+            Dictionary<Rank, int> counts = CountRanks(cards);
+            
             //驗同花順是否成立
+            if (isFlush && isStraight)
+            {
+                play = new BigTwoPlay(BigTwoCombinationType.StraightFlush, cards, strength);
+                return true;
+            }
 
             //驗鐵支是否成立
+            int fourRank = FindRankWithCount(counts, 4);
+            if (fourRank > 0)
+            {
+                play = new BigTwoPlay(BigTwoCombinationType.FourOfAKing, cards, fourRank);
+                return true;
+            }
 
             //驗葫蘆是否成立
-            Dictionary<Rank, int> counts = CountRanks(cards);//記下所有的牌出現幾次
-
+            int tripleRank = FindRankWithCount(counts, 3);
+            int pairRank = FindRankWithCount(counts, 2);
+            if (tripleRank > 0 && pairRank > 0)//3同和2同同時發生
+            {
+                play = new BigTwoPlay(BigTwoCombinationType.FullHouse, cards, tripleRank);
+                return true;
+            }
 
             //驗同花是否成立
-            if (AllSuitMatch(cards))
+            if (isFlush)
             {
                 play = new BigTwoPlay(BigTwoCombinationType.Flush, cards, GetHighestRank(cards));
                 return true;
             }
 
             //驗順子是否成立
-            if (BigTwoStraightRules.TryGetStraight(cards, out int strength))
+            if (isStraight)
             {
                 play = new BigTwoPlay(BigTwoCombinationType.Straight, cards, strength);
                 return true;
