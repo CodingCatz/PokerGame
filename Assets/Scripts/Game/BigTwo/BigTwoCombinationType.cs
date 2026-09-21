@@ -38,7 +38,7 @@ namespace PokerGame.Game.BigTwo
         /// <summary>
         /// 鐵支：四同點+任一
         /// </summary>
-        FourOfAKing = 8,
+        FourOfAKing = 7,
         /// <summary>
         /// 同花順：4 + 5 牌型
         /// </summary>

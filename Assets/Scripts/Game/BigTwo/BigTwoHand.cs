@@ -8,7 +8,7 @@ namespace PokerGame.Game.BigTwo
     public class BigTwoHand : PokerHand
     {
         #region 私有欄位
-        private readonly BigTwoCardCompaer _comparer = new BigTwoCardCompaer();
+        private readonly BigTwoCardComparer _comparer = new BigTwoCardComparer();
         #endregion 私有欄位
 
         #region 公開方法

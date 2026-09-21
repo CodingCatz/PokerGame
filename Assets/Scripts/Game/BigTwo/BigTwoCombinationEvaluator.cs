@@ -124,7 +124,7 @@ namespace PokerGame.Game.BigTwo
             foreach (KeyValuePair<Rank, int> item in counts) 
             {
                 if (item.Value == expectedCount) 
-                    return BigTwoCardCompaer.GetRankStrength(item.Key);
+                    return BigTwoCardComparer.GetRankStrength(item.Key);
             }
             return 0;
         }
@@ -138,7 +138,7 @@ namespace PokerGame.Game.BigTwo
 
             foreach (var card in cards) 
             {//遍歷：看到更高就記下
-                int rank = BigTwoCardCompaer.GetRankStrength(card.Rank);
+                int rank = BigTwoCardComparer.GetRankStrength(card.Rank);
                 if (rank > highestRank) highestRank = rank;
             }
 

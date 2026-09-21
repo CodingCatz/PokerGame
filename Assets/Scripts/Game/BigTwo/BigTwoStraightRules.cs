@@ -24,7 +24,7 @@ namespace PokerGame.Game.BigTwo
             List<int> ranks = new List<int>();//為了產生順子新次序建立清單
             foreach (PlayingCard card in cards) 
             {//以A後面可接2的情況去跑：只把A當14使用，2維持原樣
-                int rank = BigTwoCardCompaer.GetRankStrength(card.Rank);
+                int rank = BigTwoCardComparer.GetRankStrength(card.Rank);
                 ranks.Add(rank);
             }
             ranks.Sort();

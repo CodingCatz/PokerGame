@@ -7,7 +7,7 @@ namespace PokerGame.Game.BigTwo
     /// <summary>
     /// 卡牌配對規則(運算主責腳本)
     /// </summary>
-    public class BigTwoCardCompaer : IComparer<PlayingCard>
+    public class BigTwoCardComparer : IComparer<PlayingCard>
     {
 
         #region 公開方法
