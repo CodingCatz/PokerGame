@@ -26,12 +26,12 @@ namespace PokerGame.Game.BigTwo
         }
 
         /// <summary>
-        /// 驗證挑戰者是否能戰勝衛冕者
+        /// 驗證挑戰者是否能戰勝衛冕者(前提張數相同)
         /// </summary>
         /// <returns></returns>
         public bool CanBeat(BigTwoPlay left, BigTwoPlay right)
         {
-            return Compare(left, right) > 0;
+            return left.Count == right.Count && Compare(left, right) > 0;
         }
     }
 }
