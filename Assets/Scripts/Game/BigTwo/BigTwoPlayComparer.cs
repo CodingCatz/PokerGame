@@ -31,6 +31,7 @@ namespace PokerGame.Game.BigTwo
         /// <returns></returns>
         public bool CanBeat(BigTwoPlay left, BigTwoPlay right)
         {
+            if (right == null) return true;
             return left.Count == right.Count && Compare(left, right) > 0;
         }
     }

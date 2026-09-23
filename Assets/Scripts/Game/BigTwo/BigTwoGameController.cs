@@ -63,14 +63,11 @@ namespace PokerGame.Game.BigTwo
         /// 操作者的卡牌選取器(共用)
         /// </summary>
         private readonly BigTwoSelection _selection = new BigTwoSelection();
+        
         /// <summary>
-        /// 牌型進化檢驗器
+        /// 玩家間手牌協調檢查器
         /// </summary>
-        private readonly BigTwoCombinationEvaluator _evaluator = new BigTwoCombinationEvaluator();
-        /// <summary>
-        /// 回合流程控制器
-        /// </summary>
-        private readonly BigTwoRound _round = new BigTwoRound();
+        private readonly BigTwoMatch _match = new BigTwoMatch();
         /// <summary>
         /// C#內建的執行序身分認證
         /// </summary>
@@ -112,7 +109,7 @@ namespace PokerGame.Game.BigTwo
             //產生一個 TASK 的辨識碼(行程的ID)
             _flowCancellation = new CancellationTokenSource();
             _dealer.BeginRound();
-            ClearHands();
+            ReleaseCrads();
             //外部任務捨棄(因為沒有要排隊)
             _ = StartDealAsync(GameSpeed, _flowCancellation.Token);
         }
@@ -131,13 +128,10 @@ namespace PokerGame.Game.BigTwo
 
         public override void ExitMode()
         {
-            //流程清除(中止)
+            //流程清除(中止背景任務)
             CancelFlow();
-            //桌面(視覺)狀態刷新
-            RefreshSelectionView();
-            //荷官整理桌面
-            _dealer.CollectAll();
-            ClearHands();
+            //整理桌面(資料 & 視覺)
+            ReleaseCrads();
         }
 
         /// <summary>
@@ -153,13 +147,14 @@ namespace PokerGame.Game.BigTwo
         /// <param name="view"></param>
         public void CardViewClick(CardView view)
         {
+            if (!_match.IsHumanRound) return;
             //手牌 Layout 被選中的視覺對應序號紀錄
             int index = _playerLayouts[0].SelectionToggle(view);
             if (index < 0) return;
             //執行選取紀錄
             _selection.Toggle(_hands[0].Cards[index]);
             //送驗牌員：紀錄是否成配對成組
-            bool canPlay = _evaluator.TryEvaluate(_selection.Cards, out BigTwoPlay play);
+            bool canPlay = _match.CanPlay(0, _selection.Cards, out BigTwoPlay play);
             //出牌鈕狀態更新
             _playBtn.gameObject.SetActive(canPlay);
             //印出牌型
@@ -180,6 +175,9 @@ namespace PokerGame.Game.BigTwo
                 _hands.Add(new BigTwoHand());
             }
         }
+        /// <summary>
+        /// End.終結必然要執行
+        /// </summary>
         private void CancelFlow()
         {
             //不管任何形式的被結束、關閉：用 TASK 的 Token 通知任務已結束
@@ -196,15 +194,20 @@ namespace PokerGame.Game.BigTwo
         }
 
         /// <summary>
-        /// 整理(清除)四組玩家手牌容器
+        /// 回收 View 並且整理(清除)四組玩家手牌資料
         /// </summary>
-        private void ClearHands()
+        private void ReleaseCrads()
         {
+            //遊戲可操作狀態鎖定
+            _ready = false;
+            //卡牌選取狀態清除 & 刷新
             _selection.Clear();
-
-            for (int i = 0; i < _hands.Count; i++)
+            RefreshSelectionView();
+            //荷官回收卡牌(資料)
+            _dealer.CollectAll();
+            foreach (BigTwoHand hand in _hands)
             {//清除4組手牌資料(視覺)
-                _hands[i].Clear();
+                hand.Clear();
             }
         }
         /// <summary>
@@ -245,6 +248,7 @@ namespace PokerGame.Game.BigTwo
                     await Task.Delay(msec);//等待：延遲任務
                 }
             }
+
             //2-2.手牌順序整理
             UpdateStatusUI("Players are Sorting.");
             for (int i = 0; i < _hands.Count; i++)
@@ -257,6 +261,12 @@ namespace PokerGame.Game.BigTwo
                 _playerLayouts[i].ReBindCards(_hands[i].Cards);
                 await Task.Delay(msec);//等待：延遲任務
             }
+
+            //2-3.手牌擁有梅花三的玩家開始出牌
+            UpdateStatusUI("Owns Three of Clubs \n Player Start Play.");
+            await Task.Delay(msec * 10);//等待：延遲任務
+            //確定起始玩家(四家手牌巡檢)
+            UpdateStatusUI($"Player {_match.Start(_hands) + 1} Play Cards.");
 
             //完全準備完畢
             _ready = true;

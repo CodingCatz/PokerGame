@@ -53,7 +53,7 @@ namespace PokerGame.Game.BigTwo
         {
             TopPlay = null;
             CurrentPlayerIndex = playerIndex;
-            //LeaderIndex = playerIndex;//以防萬一
+            LeaderIndex = playerIndex;//以防萬一
             State = BigTwoRoundState.AwaitingLead;
             _passes = 0;
         }
