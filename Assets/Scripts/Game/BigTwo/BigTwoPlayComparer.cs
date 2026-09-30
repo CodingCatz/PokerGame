@@ -1,3 +1,5 @@
+using PokerGame.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +24,8 @@ namespace PokerGame.Game.BigTwo
             int typeCompare = left.Type.CompareTo(right.Type);
             if (typeCompare != 0) return typeCompare;
             //牌型平手的驗證邏輯
-            return left.Strength.CompareTo(right.Strength);
+            int rank = left.Strength.CompareTo(right.Strength);
+            return rank == 0 ? HighestSuit(left).CompareTo(HighestSuit(right)) : rank;
         }
 
         /// <summary>
@@ -33,6 +36,16 @@ namespace PokerGame.Game.BigTwo
         {
             if (right == null) return true;
             return left.Count == right.Count && Compare(left, right) > 0;
+        }
+        /// <summary>
+        /// 取得較大的花色值
+        /// </summary>
+        private int HighestSuit(BigTwoPlay play)
+        {
+            int highest = -1;
+            foreach (PlayingCard card in play.Cards) 
+                highest = Math.Max(highest, (int)card.Suit);
+            return highest;
         }
     }
 }

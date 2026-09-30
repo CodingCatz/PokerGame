@@ -21,21 +21,14 @@ namespace PokerGame.Game.BigTwo
             play = null;
             //未選 or 選4 都無法成組
             if (cards.Count < 1 || cards.Count == 4) return false;
-
+            foreach (PlayingCard card in cards) if (card == null) return false;
+            //5張組合
             if (cards.Count == 5) return CheckEvaluateFive(cards, out play);
-
-            //1張以上開始做組合驗證
-            if (cards.Count == 1)
-            {
-                play = new BigTwoPlay(BigTwoCombinationType.Single, cards, (int)cards[0].Rank);
-                return true;
-            }
             //是否全部同點
-            if (!AllRanksMatch(cards)) return false;//否
-
-            BigTwoCombinationType type = cards.Count == 2 ?
-                BigTwoCombinationType.Pair :
-                BigTwoCombinationType.Triple;
+            if (cards.Count > 1 && !AllRanksMatch(cards)) return false;//否
+            //1張以上開始做組合驗證
+            BigTwoCombinationType type = cards.Count == 1 ? BigTwoCombinationType.Single :
+                cards.Count == 2 ? BigTwoCombinationType.Pair : BigTwoCombinationType.Triple;
 
             play = new BigTwoPlay(type, cards, (int)cards[0].Rank);
             return true;
