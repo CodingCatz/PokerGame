@@ -32,11 +32,14 @@ namespace PokerGame.Game.BigTwo
         /// 切換卡牌的選取狀態紀錄
         /// </summary>
         /// <param name="card">執行對象，點選的卡</param>
-        public void Toggle(PlayingCard card)
+        public bool Toggle(PlayingCard card)
         {
-            if (_cards.Contains(card)) //點選的卡牌是否包含於已選清單內
-                _cards.Remove(card);//若有：就移除(取消選取)
-            else _cards.Add(card);//若無：就加入(選取)
+            if (card == null) return false;
+            //點選的卡牌是否包含於已選清單內(就會成功移除)
+            if (_cards.Remove(card)) return true;
+            if (_cards.Count >= 5) return false;
+            _cards.Add(card);//若無：就加入(選取)
+            return true;
         }
         /// <summary>
         /// 清除所有選取

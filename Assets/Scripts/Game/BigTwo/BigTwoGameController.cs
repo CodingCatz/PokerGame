@@ -36,7 +36,57 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         [SerializeField]
         private TMP_Text _playLabel;
+        /// <summary>
+        /// [UI]放棄按鈕
+        /// </summary>
+        [SerializeField]
+        private Button _passBtn;
+        /// <summary>
+        /// [UI]清除選取按鈕
+        /// </summary>
+        [SerializeField]
+        private Button _clearBtn;
+        /// <summary>
+        /// [定位物件]廢牌區
+        /// </summary>
+        [SerializeField]
+        private Transform _discardRoot;
         #endregion UI元件
+
+        #region UI相關功能
+        /// <summary>
+        /// [UI按鈕]出牌(選取的)
+        /// </summary>
+        public void PlaySelectedCards()
+        {
+            _playerLayouts[0].MoveCardsTo(_tableLayout);
+        }
+        /// <summary>
+        /// [UI按鈕]放棄操作
+        /// </summary>
+        public void PassTurn()
+        {
+            
+        }
+        /// <summary>
+        /// [UI按鈕]取消選取的
+        /// </summary>
+        public void ClearSelection()
+        {
+            
+        }
+        /// <summary>
+        /// 更新所有控制介面的狀態
+        /// </summary>
+        private void RefreshControls()
+        {
+            _startBtn?.gameObject.SetActive(false);
+            _passBtn?.gameObject.SetActive(false);
+            _clearBtn?.gameObject.SetActive(false);
+            //印出牌型
+            //if (play != null) _playLabel.text = play.Type.ToString();
+        }
+        #endregion UI相關功能
 
         #region 欄位
         /// <summary>
@@ -121,7 +171,7 @@ namespace PokerGame.Game.BigTwo
         {
             //開始發牌(訊息)
             UpdateStatusUI("Start Deal Four Hands.");
-            _startBtn?.gameObject.SetActive(false);
+            RefreshControls();
             //桌面(視覺)狀態刷新
             RefreshSelectionView();
         }
@@ -134,13 +184,6 @@ namespace PokerGame.Game.BigTwo
             ReleaseCrads();
         }
 
-        /// <summary>
-        /// [UI按鈕]出牌(選取的)
-        /// </summary>
-        public void PlaySelectedCards()
-        {
-            _playerLayouts[0].MoveCardsTo(_tableLayout);
-        }
         /// <summary>
         /// [被委派]每個CardView的點擊觸發
         /// </summary>
@@ -156,9 +199,8 @@ namespace PokerGame.Game.BigTwo
             //送驗牌員：紀錄是否成配對成組
             bool canPlay = _match.CanPlay(0, _selection.Cards, out BigTwoPlay play);
             //出牌鈕狀態更新
-            _playBtn.gameObject.SetActive(canPlay);
-            //印出牌型
-            if (play != null) _playLabel.text = play.Type.ToString();
+            RefreshControls();
+           
         }
         #endregion 公開方法
 
@@ -169,7 +211,7 @@ namespace PokerGame.Game.BigTwo
         private void EnsureHands()
         {
             UpdateStatusUI("Ready to Play ?");
-            _startBtn?.gameObject.SetActive(true);
+            RefreshControls();
             for (int i = 0; i < _playerLayouts.Length; i++)
             {
                 _hands.Add(new BigTwoHand());
