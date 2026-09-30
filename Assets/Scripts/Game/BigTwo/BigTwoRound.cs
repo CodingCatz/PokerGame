@@ -1,5 +1,4 @@
 using System;
-using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 
 namespace PokerGame.Game.BigTwo
@@ -82,7 +81,9 @@ namespace PokerGame.Game.BigTwo
             TopPlay = play;//記錄頂牌
             LeaderIndex = playerIndex;//紀錄出牌者
             State = BigTwoRoundState.AwaitingResponse;//狀態設為可被回應(跟牌)
-           
+            //更新頂牌：重啟一輪
+            _passes = 0;
+            CurrentPlayerIndex = NextPlayer(playerIndex);
             return true;
         }
         /// <summary>
