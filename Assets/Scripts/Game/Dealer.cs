@@ -81,21 +81,8 @@ namespace PokerGame.Game
         /// <returns>卡牌資料</returns>
         public PlayingCard DealTo(Transform dest, bool showUp = true)
         {
-            //抽出一張(資料)
-            PlayingCard card = _deck.Draw();
-            if (showUp) card.ShowUp();
-            else card.Hide();
-            //抽出一張(空閒牌面)
-            CardView view = viewPool.Rent();
-            //丟到所屬手牌區(目的地)
-            view.transform.SetParent(dest, false);
-            //資料與視覺組合
-            view.Bind(card);
-            //紀錄已發出去的牌面實體(物件池回收參考清單)
-            _activeViews.Add(view);
-
             //傳出去
-            return card;
+            return DealTo(dest, null, showUp);
         }
 
         /// <summary>
@@ -118,6 +105,8 @@ namespace PokerGame.Game
             {
                 viewPool.Return(view);
             }
+            //清空紀錄
+            _activeViews.Clear();
         }
         #endregion 公開方法
 

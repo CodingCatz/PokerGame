@@ -60,8 +60,11 @@ namespace PokerGame.View
         /// <param name="view">使用過的牌面</param>
         public void Return(CardView view)
         {
+            //解除已綁定的遊戲點擊事件(功能)
+            view.SetClickAction(null);
             //回歸到物件池管理的子物件
             view.transform.SetParent(transform, false);
+            view.transform.localPosition = Vector3.zero;
             //先隱藏：遊戲物件.設為(不可見)
             view.gameObject.SetActive(false);
             //收回入池(重新入隊)
