@@ -32,21 +32,27 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         public BigTwoRound Round => _round;
         /// <summary>
-        /// 是否為玩家(真人)回合
-        /// </summary>
-        public bool IsHumanRound => IsStarted && !IsComplete && _round.CurrentPlayerIndex == 0;
-        /// <summary>
         /// 是否已連上四家手牌
         /// </summary>
         public bool IsStarted => _hands != null;
         /// <summary>
-        /// 當前的領先者序號
-        /// </summary>
-        public int WinnerIndex { get; private set; } = -1;
-        /// <summary>
         /// 是否處於可完成輪次回合的狀態
         /// </summary>
         public bool IsComplete => WinnerIndex >= 0;
+        /// <summary>
+        /// 遊戲於可運行狀態
+        /// </summary>
+        public bool IsGaming => IsStarted && !IsComplete;
+        /// <summary>
+        /// 是否為玩家(真人)回合
+        /// </summary>
+        public bool IsHumanRound => IsGaming && _round.CurrentPlayerIndex == 0;
+        
+        /// <summary>
+        /// 當前的領先者序號
+        /// </summary>
+        public int WinnerIndex { get; private set; } = -1;
+        
 
         #endregion 公開屬性
 

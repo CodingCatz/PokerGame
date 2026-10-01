@@ -59,13 +59,9 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         public void StartGame()
         {
-            EnterMode();
-            //產生一個 TASK 的辨識碼(行程的ID)
-            _flowCancellation = new CancellationTokenSource();
-            _dealer.BeginRound();
-            ReleaseCrads();
-            //外部任務捨棄(因為沒有要排隊)
-            _ = StartDealAsync(GameSpeed, _flowCancellation.Token);
+            //未回到待機 或 遊戲已在進行 不能開啟新局
+            if (!Idle || _match.IsGaming) return;
+            RunFlow(true);//啟動非同步行程(開局)
         }
         /// <summary>
         /// [UI按鈕]出牌(選取的)
@@ -212,8 +208,6 @@ namespace PokerGame.Game.BigTwo
         #endregion 生命週期
 
         #region 公開方法
-        
-
         /// <summary>
         /// 2.按下開始後顯示發牌訊息 & 更新桌面視覺狀態
         /// </summary>
@@ -248,52 +242,35 @@ namespace PokerGame.Game.BigTwo
                 _hands.Add(new BigTwoHand());
             }
         }
-        /// <summary>
-        /// End.終結必然要執行
-        /// </summary>
-        private void CancelFlow()
-        {
-            //不管任何形式的被結束、關閉：用 TASK 的 Token 通知任務已結束
-            //避免卡死成為殭屍行程
-            _flowCancellation?.Cancel();
-        }
-        /// <summary>
-        /// 更新狀態文字UI
-        /// </summary>
-        /// <param name="msg">訊息</param>
-        private void UpdateStatusUI(string msg)
-        {
-            _statusLabel.text = msg;
-        }
 
         /// <summary>
-        /// 回收 View 並且整理(清除)四組玩家手牌資料
+        /// 2-0.遊戲流程控制：發牌、電腦玩家出牌、玩家出牌
+        /// 非同步流程與電腦最小策略
         /// </summary>
-        private void ReleaseCrads()
+        /// <param name="dealFirst">是否先發牌</param>
+        private async void RunFlow(bool dealFirst)
         {
-            //遊戲可操作狀態鎖定
-            _ready = false;
-            //卡牌選取狀態清除 & 刷新
-            _selection.Clear();
-            RefreshSelectionView();
-            //荷官回收卡牌(資料)
-            _dealer.CollectAll();
-            foreach (BigTwoHand hand in _hands)
-            {//清除4組手牌資料(視覺)
-                hand.Clear();
+            if (_flowCancellation != null) return;
+            var source = new CancellationTokenSource();//建立一個 TASK 的辨識碼(行程的ID)
+            _flowCancellation = source;//行程開始
+            RefreshControls();//刷新UI狀態
+
+            if (dealFirst)
+            {//發牌(資料 & 視覺)
+                ReleaseCrads();
+                _dealer.BeginRound();
+                UpdateStatusUI("Start Deal Four Hands.");
+                await StartDealAsync(GameSpeed, source.Token);
             }
-        }
-        /// <summary>
-        /// Selection手牌狀態重畫(刷新)
-        /// </summary>
-        private void RefreshSelectionView()
-        {
-            if (_playerLayouts != null && 
-                _playerLayouts.Length > 0 && 
-                _playerLayouts[0] != null)
-            {//刷新選取的手牌視覺
-                //_playerLayouts[0].
-            }
+
+            //電腦決策流程
+            //await RunComputerTurnsAsync(source.Token);
+            ShowTurn();
+
+            _flowCancellation = null;//行程結束
+            source.Dispose();//釋放資源
+            RefreshControls();//刷新UI狀態
+
         }
 
         /// <summary>
@@ -345,10 +322,76 @@ namespace PokerGame.Game.BigTwo
             _ready = true;
         }
 
-
+        /// <summary>
+        /// 勝負確定就停止；否則啟動下一家行動
+        /// </summary>
         private void ContinueGame()
         {
+            if (_match.IsComplete)
+            {
+                ShowTurn();
+                RefreshControls();
+                return;
+            }
+            RunFlow(false);
+        }
 
+        /// <summary>
+        /// SHOW出第一位出完的贏家
+        /// </summary>
+        private void ShowTurn()
+        {
+            UpdateStatusUI(_match.IsComplete ?
+                $"Player {_match.WinnerIndex + 1} Wins! Press Start to replay." :
+                $"Player {_match.Round.CurrentPlayerIndex + 1} Play Cards.");
+        }
+
+        /// <summary>
+        /// End.終結必然要執行
+        /// </summary>
+        private void CancelFlow()
+        {
+            //不管任何形式的被結束、關閉：用 TASK 的 Token 通知任務已結束
+            //避免卡死成為殭屍行程
+            _flowCancellation?.Cancel();
+        }
+        /// <summary>
+        /// 更新狀態文字UI
+        /// </summary>
+        /// <param name="msg">訊息</param>
+        private void UpdateStatusUI(string msg)
+        {
+            _statusLabel.text = msg;
+        }
+
+        /// <summary>
+        /// 回收 View 並且整理(清除)四組玩家手牌資料
+        /// </summary>
+        private void ReleaseCrads()
+        {
+            //遊戲可操作狀態鎖定
+            _ready = false;
+            //卡牌選取狀態清除 & 刷新
+            _selection.Clear();
+            RefreshSelectionView();
+            //荷官回收卡牌(資料)
+            _dealer.CollectAll();
+            foreach (BigTwoHand hand in _hands)
+            {//清除4組手牌資料(視覺)
+                hand.Clear();
+            }
+        }
+        /// <summary>
+        /// Selection手牌狀態重畫(刷新)
+        /// </summary>
+        private void RefreshSelectionView()
+        {
+            if (_playerLayouts != null &&
+                _playerLayouts.Length > 0 &&
+                _playerLayouts[0] != null)
+            {//刷新選取的手牌視覺
+                //_playerLayouts[0].
+            }
         }
         #endregion 私有方法
     }
