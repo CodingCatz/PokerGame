@@ -55,36 +55,86 @@ namespace PokerGame.Game.BigTwo
 
         #region UI相關功能
         /// <summary>
+        /// [UI按鈕]開始牌局
+        /// </summary>
+        public void StartGame()
+        {
+            EnterMode();
+            //產生一個 TASK 的辨識碼(行程的ID)
+            _flowCancellation = new CancellationTokenSource();
+            _dealer.BeginRound();
+            ReleaseCrads();
+            //外部任務捨棄(因為沒有要排隊)
+            _ = StartDealAsync(GameSpeed, _flowCancellation.Token);
+        }
+        /// <summary>
         /// [UI按鈕]出牌(選取的)
         /// </summary>
         public void PlaySelectedCards()
         {
-            _playerLayouts[0].MoveCardsTo(_tableLayout);
+            if (!CanHumanAct) return;
+            if (!_match.TryPlay(0, _selection.Cards, out BigTwoPlay play))
+            {
+                RefreshControls();
+                return;
+            }
+
+        }
+        /// <summary>
+        /// [被委派/動態UI]每個CardView的點擊觸發
+        /// </summary>
+        /// <param name="view"></param>
+        public void CardViewClick(CardView view)
+        {
+            if (!CanHumanAct || view == null) return;
+            //手牌 Layout 被選中的視覺對應序號紀錄
+            int index = _playerLayouts[0].IndexOf(view);
+            if (index < 0) return;
+            //執行選取紀錄
+            _selection.Toggle(_hands[0].Cards[index]);
+            RefreshSelectionView();
+            //出牌鈕狀態更新
+            RefreshControls();
+
         }
         /// <summary>
         /// [UI按鈕]放棄操作
         /// </summary>
         public void PassTurn()
         {
-            
+            if (!CanHumanAct || !_match.TryPass(0)) return;
+            _selection.Clear();
+            RefreshSelectionView();
+            RefreshControls();
+            //遊戲要繼續
+            ContinueGame();
         }
+
         /// <summary>
         /// [UI按鈕]取消選取的
         /// </summary>
         public void ClearSelection()
         {
-            
+            if (!CanHumanAct) return;
+            _selection.Clear();
+            RefreshSelectionView();
+            RefreshControls();
         }
         /// <summary>
         /// 更新所有控制介面的狀態
         /// </summary>
         private void RefreshControls()
         {
-            _startBtn?.gameObject.SetActive(false);
-            _passBtn?.gameObject.SetActive(false);
-            _clearBtn?.gameObject.SetActive(false);
+            bool idle = _flowCancellation == null;
+            _startBtn?.gameObject.SetActive(idle && (!_match.IsStarted || _match.IsComplete));
+            bool canPlay = false;
+            BigTwoPlay play = null;
+            if (CanHumanAct) canPlay = _match.CanPlay(0, _selection.Cards, out play);
+            _playBtn?.gameObject.SetActive(canPlay);
             //印出牌型
-            //if (play != null) _playLabel.text = play.Type.ToString();
+            if (play != null) _playLabel.text = play.Type.ToString();
+            _passBtn?.gameObject.SetActive(CanHumanAct && _match.Round.TopPlay != null);
+            _clearBtn?.gameObject.SetActive(CanHumanAct && _selection.Count > 0);
         }
         #endregion UI相關功能
 
@@ -138,6 +188,10 @@ namespace PokerGame.Game.BigTwo
         /// 遊戲速率(毫秒延遲)
         /// </summary>
         public int GameSpeed => (int)(_delayTime * 1000);
+        /// <summary>
+        /// 真人操作時機
+        /// </summary>
+        public bool CanHumanAct => _ready && _match.IsHumanRound;
         #endregion 公開屬性
 
         #region 生命週期
@@ -150,19 +204,7 @@ namespace PokerGame.Game.BigTwo
         #endregion 生命週期
 
         #region 公開方法
-        /// <summary>
-        /// [UI按鈕]開始牌局
-        /// </summary>
-        public void StartGame()
-        {
-            EnterMode();
-            //產生一個 TASK 的辨識碼(行程的ID)
-            _flowCancellation = new CancellationTokenSource();
-            _dealer.BeginRound();
-            ReleaseCrads();
-            //外部任務捨棄(因為沒有要排隊)
-            _ = StartDealAsync(GameSpeed, _flowCancellation.Token);
-        }
+        
 
         /// <summary>
         /// 2.按下開始後顯示發牌訊息 & 更新桌面視覺狀態
@@ -182,25 +224,6 @@ namespace PokerGame.Game.BigTwo
             CancelFlow();
             //整理桌面(資料 & 視覺)
             ReleaseCrads();
-        }
-
-        /// <summary>
-        /// [被委派]每個CardView的點擊觸發
-        /// </summary>
-        /// <param name="view"></param>
-        public void CardViewClick(CardView view)
-        {
-            if (!_match.IsHumanRound) return;
-            //手牌 Layout 被選中的視覺對應序號紀錄
-            int index = _playerLayouts[0].SelectionToggle(view);
-            if (index < 0) return;
-            //執行選取紀錄
-            _selection.Toggle(_hands[0].Cards[index]);
-            //送驗牌員：紀錄是否成配對成組
-            bool canPlay = _match.CanPlay(0, _selection.Cards, out BigTwoPlay play);
-            //出牌鈕狀態更新
-            RefreshControls();
-           
         }
         #endregion 公開方法
 
@@ -312,6 +335,12 @@ namespace PokerGame.Game.BigTwo
 
             //完全準備完畢
             _ready = true;
+        }
+
+
+        private void ContinueGame()
+        {
+
         }
         #endregion 私有方法
     }

@@ -173,6 +173,47 @@ namespace PokerGame.View
             target.Refresh();
             ClearSelectedIndex();
         }
+
+        /// <summary>
+        /// 只查牌面的子物件索引
+        /// </summary>
+        public int IndexOf(CardView view)
+        {
+            for (int i = 0; i < Count; i++)
+                if (Root.GetChild(i).GetComponent<CardView>() == view) return i;
+            return -1;
+        }
+        /// <summary>
+        /// 依提交前保存的索引搬牌；由大到小避免索引位移
+        /// </summary>
+        public void MoveCardsTo(CardHandLayout target, IReadOnlyList<int> indices)
+        {
+            var order = new List<int>(indices);
+            order.Sort();
+            order.Reverse();
+            foreach (int index in order)
+            {
+                Transform child = Root.GetChild(index);
+                child.GetComponent<CardView>().SetClickAction(null);
+                child.SetParent(target.Root, false);
+            }
+            Refresh();
+            target.Refresh();
+            target.SelectionToggle(new int[0]);
+        }
+        /// <summary>
+        /// 舊桌牌移到棄牌區並隱藏；不在這裡歸還 Pool
+        /// </summary>
+        public void MoveAllTo(Transform destination)
+        {
+            while (Count > 0)
+            {
+                Transform child = Root.GetChild(0);
+                child.GetComponent<CardView>().SetClickAction(null);
+                child.SetParent(destination, false);
+                child.gameObject.SetActive(false);
+            }
+        }
         #endregion 公開方法
 
         #region 私有功能
