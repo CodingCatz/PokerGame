@@ -102,8 +102,11 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         public void PassTurn()
         {
-            if (!CanHumanAct || !_match.TryPass(0)) return;
+            if (!CanHumanAct || !_match.TryPass(0, out bool clearedTable)) return;
             _selection.Clear();
+            //此輪PASS是最後一家，清桌回收廢牌(進廢牌區)
+            if (clearedTable) _tableLayout.MoveAllTo(_discardRoot);
+            //刷新桌面視覺
             RefreshSelectionView();
             RefreshControls();
             //遊戲要繼續
@@ -125,8 +128,7 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         private void RefreshControls()
         {
-            bool idle = _flowCancellation == null;
-            _startBtn?.gameObject.SetActive(idle && (!_match.IsStarted || _match.IsComplete));
+            _startBtn?.gameObject.SetActive(Idle && (!_match.IsStarted || _match.IsComplete));
             bool canPlay = false;
             BigTwoPlay play = null;
             if (CanHumanAct) canPlay = _match.CanPlay(0, _selection.Cards, out play);
@@ -189,14 +191,20 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         public int GameSpeed => (int)(_delayTime * 1000);
         /// <summary>
+        /// 無任何異步行程在執行中，遊戲處於閒置狀態
+        /// </summary>
+        public bool Idle => _flowCancellation == null;
+        /// <summary>
         /// 真人操作時機
         /// </summary>
-        public bool CanHumanAct => _ready && _match.IsHumanRound;
+        public bool CanHumanAct => _ready && Idle && _match.IsHumanRound;
         #endregion 公開屬性
 
         #region 生命週期
         //建立手牌資料容器 * 4
         private void Awake() => EnsureHands();
+
+        private void OnEnable() => EnterMode();
         //程式腳本被關閉時觸發(單純的停止遊戲資料的回收機制)
         private void OnDisable() => ExitMode();
         //場景被卸載(物件被銷毀)，徹底停止一些背景任務(執行序)

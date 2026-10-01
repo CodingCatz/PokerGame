@@ -91,11 +91,13 @@ namespace PokerGame.Game.BigTwo
         /// </summary>
         /// <param name="playerIndex"></param>
         /// <returns></returns>
-        public bool TryPass(int playerIndex)
+        public bool TryPass(int playerIndex, out bool clearTable)
         {
+            clearTable = false;
             if (playerIndex != CurrentPlayerIndex || 
                 State != BigTwoRoundState.AwaitingResponse)
                 return false;
+
             //按下PASS後的邏輯
             _passes++;//PASS人數+1
             if (_passes == PlayerCount - 1)
@@ -108,6 +110,8 @@ namespace PokerGame.Game.BigTwo
                 State = BigTwoRoundState.AwaitingLead;
                 //PASS人數歸0重計
                 _passes = 0;
+                //清桌回報旗標
+                clearTable = true;
             }
             else
             {//放棄人數未滿：跳至下一位合法操作者

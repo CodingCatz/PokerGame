@@ -95,9 +95,10 @@ namespace PokerGame.Game.BigTwo
         /// 該員放棄出牌
         /// </summary>
         /// <returns></returns>
-        public bool TryPass(int playerIndex)
+        public bool TryPass(int playerIndex, out bool clearedTable)
         {
-            return !IsComplete && _round.TryPass(playerIndex);
+            clearedTable = false;
+            return !IsComplete && _round.TryPass(playerIndex, out clearedTable);
         }
 
         public void Reset()
@@ -127,17 +128,8 @@ namespace PokerGame.Game.BigTwo
         }
 
         /// <summary>
-        /// 牌組和出牌者是否一致
+        /// 第一手必須包含梅花三，其他首出不限制
         /// </summary>
-        /// <param name="playerIndex"></param>
-        /// <param name="cards"></param>
-        /// <returns></returns>
-        /*
-        private bool OwnsCards(int playerIndex, IReadOnlyList<PlayingCard> cards)
-        {
-
-        }
-        */
         private bool ContainsOpeningCard(IReadOnlyList<PlayingCard> cards)
         {
             foreach (PlayingCard card in cards)
