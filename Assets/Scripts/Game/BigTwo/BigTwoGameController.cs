@@ -456,7 +456,8 @@ namespace PokerGame.Game.BigTwo
                 _playerLayouts.Length > 0 &&
                 _playerLayouts[0] != null)
             {//刷新選取的手牌視覺
-                //_playerLayouts[0].
+                List<int> indices = CaptureIndices(0, _selection.Cards);
+                _playerLayouts[0].SelectionToggle(indices);
             }
         }
         #endregion 私有方法
