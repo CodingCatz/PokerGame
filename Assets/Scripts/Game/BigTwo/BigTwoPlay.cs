@@ -35,7 +35,8 @@ namespace PokerGame.Game.BigTwo
         public BigTwoPlay(BigTwoCombinationType type, IReadOnlyList<PlayingCard> cards, int strength)
         {
             Type = type;
-            Cards = cards;
+            //建立出牌紀錄時複製清單，不共用 Selection 的容器
+            Cards = new List<PlayingCard>(cards).AsReadOnly();
             Strength = strength;
         }
         #endregion 建構式
