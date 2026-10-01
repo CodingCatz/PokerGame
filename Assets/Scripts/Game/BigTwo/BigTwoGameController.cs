@@ -69,12 +69,16 @@ namespace PokerGame.Game.BigTwo
         public void PlaySelectedCards()
         {
             if (!CanHumanAct) return;
+            //記下牌的畫面索引
+            List<int> indices = CaptureIndices(0, _selection.Cards);
             if (!_match.TryPlay(0, _selection.Cards, out BigTwoPlay play))
             {
                 RefreshControls();
                 return;
             }
-
+            //實際提交
+            ShowCommittedPlay(0, indices, play);
+            ContinueGame();//遊戲繼續
         }
         /// <summary>
         /// [被委派/動態UI]每個CardView的點擊觸發
