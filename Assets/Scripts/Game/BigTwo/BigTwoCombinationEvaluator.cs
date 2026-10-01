@@ -29,8 +29,8 @@ namespace PokerGame.Game.BigTwo
             //1張以上開始做組合驗證
             BigTwoCombinationType type = cards.Count == 1 ? BigTwoCombinationType.Single :
                 cards.Count == 2 ? BigTwoCombinationType.Pair : BigTwoCombinationType.Triple;
-
-            play = new BigTwoPlay(type, cards, (int)cards[0].Rank);
+            //建立出牌紀錄(強度翻譯更正)
+            play = new BigTwoPlay(type, cards, BigTwoCardComparer.GetRankStrength(cards[0].Rank));
             return true;
         }
         #endregion 公開方法
