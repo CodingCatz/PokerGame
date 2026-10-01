@@ -264,7 +264,7 @@ namespace PokerGame.Game.BigTwo
             }
 
             //電腦決策流程
-            //await RunComputerTurnsAsync(source.Token);
+            await RunComputerTurnsAsync(source.Token);
             ShowTurn();
 
             _flowCancellation = null;//行程結束
@@ -320,6 +320,72 @@ namespace PokerGame.Game.BigTwo
 
             //完全準備完畢
             _ready = true;
+        }
+
+        /// <summary>
+        /// 電腦自動化流程
+        /// </summary>
+        private async Task RunComputerTurnsAsync(CancellationToken token)
+        {
+            while (!_match.IsComplete && !_match.IsHumanRound)
+            {
+                int player = _match.Round.CurrentPlayerIndex;
+                UpdateStatusUI($"Player {player + 1} Thinking...");
+                await Task.Delay(GameSpeed, token);
+                token.ThrowIfCancellationRequested();
+                List<PlayingCard> cards = FindComputerSingle(player);
+                if (cards == null)
+                {
+                    _match.TryPass(player, out bool clearedTable);
+                    if (clearedTable) _tableLayout.MoveAllTo(_discardRoot);
+                    continue;
+                }
+                List<int> indices = CaptureIndices(player, cards);
+                if (!_match.TryPlay(player, cards, out BigTwoPlay play))
+                    throw new InvalidOperationException("電腦出牌失敗。");
+                ShowCommittedPlay(player, indices, play);
+            }
+        }
+
+        /// <summary>
+        /// [簡易模式]按已排序手牌找最小合法單張，多張頂牌時選擇 Pass
+        /// </summary>
+        private List<PlayingCard> FindComputerSingle(int player)
+        {
+            foreach (PlayingCard card in _hands[player].Cards)
+            {
+                var candidate = new List<PlayingCard> { card };
+                if (_match.CanPlay(player, candidate, out _)) return candidate;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 提交前保存索引
+        /// </summary>
+        private List<int> CaptureIndices(int player, IReadOnlyList<PlayingCard> cards)
+        {
+            var indices = new List<int>();
+            foreach (PlayingCard card in cards)
+            {
+                int index = _hands[player].IndexOf(card);
+                indices.Add(index);
+            }
+            return indices;
+        }
+
+        /// <summary>
+        /// 提交成功更新View
+        /// </summary>
+        private void ShowCommittedPlay(int player, IReadOnlyList<int> indices,
+            BigTwoPlay play)
+        {
+            _tableLayout.MoveAllTo(_discardRoot);
+            foreach (PlayingCard card in play.Cards) card.ShowUp();
+            _playerLayouts[player].MoveCardsTo(_tableLayout, indices);
+            _tableLayout.ReBindCards(play.Cards);
+            _selection.Clear();
+            RefreshSelectionView();
         }
 
         /// <summary>
