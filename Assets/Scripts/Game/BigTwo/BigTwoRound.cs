@@ -130,7 +130,7 @@ namespace PokerGame.Game.BigTwo
         /// <returns></returns>
         private int NextPlayer(int playerIndex)
         {//取餘數：目的是為了能循環到第一位
-            return playerIndex + 1 % PlayerCount;
+            return (playerIndex + 1) % PlayerCount;
         }
         #endregion 私有方法
     }
